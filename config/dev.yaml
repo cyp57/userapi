@@ -1,0 +1,31 @@
+
+#debug or release
+RunMode : debug
+HTTPPort : 4570
+ReadTimeout : 60s
+WriteTimeout : 60s
+
+# #config database dev
+# DBType : mongodb
+# DBUser : chanyapatshell
+# DBPassword : uGjd1oeidcmAdTts
+# DBHost : mongodb+srv://chanyapatshell@cluster0.dm7mmvl.mongodb.net
+# DBName : Data
+
+#config database dev local
+DBType : mongodb
+DBUser : root
+DBPassword : root_password
+DBHost : mongodb://localhost:27019/
+DBName : data
+ 
+#configFusionAuth
+# appId : 033e5289-cb0e-4297-95bb-6376f7b5c392 
+# apiKey : 8WRFZi9_EehS_kHo3iSuMrivPY8BhuT2VxZ3uANDl5Xdi_OqUlxPXv3r
+# fusionHost : http://localhost:9011
+# ipAddress : 192.168.1.7
+
+
+
+# chanyapatshell
+# uGjd1oeidcmAdTts
