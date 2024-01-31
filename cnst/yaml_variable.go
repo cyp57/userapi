@@ -1,5 +1,7 @@
 package cnst
 
+// contain key in yaml file
+
 const (
 	RunMode      = "RunMode"
 	HTTPPort     = "HTTPPort"

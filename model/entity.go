@@ -1,8 +1,6 @@
 package model
 
-type JsonService struct {
-	Result interface{}  `json:"result"`
-	Status bool  `json:"status"`
-	StatusCode int  `json:"statusCode"`
-	Message string  `json:"message"`
+type ValueInfo struct {
+	Key    string      `json:"key"`
+	Value    string      `json:"value"`
 }

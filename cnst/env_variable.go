@@ -1,5 +1,7 @@
 package cnst
 
+// contain key in env file
+
 const (
 	Mode          = "mode"
 	AppId         = "AppID"

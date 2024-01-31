@@ -1,0 +1,9 @@
+package mongodb
+
+func DeleteDocument(){
+
+
+
+
+	
+}

@@ -1,0 +1,13 @@
+
+POST http://localhost:4570/login HTTP/1.1
+content-type: application/json
+
+# {
+#     "userName": "chanyapatshell@hotmail.com",
+#     "password": "0918208741asdasd"
+# }
+
+{
+    "userName": "chanyapatshell6@gmail.com",
+    "password": "12345678aADSD"
+}
