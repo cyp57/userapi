@@ -1,7 +1,7 @@
 package route
 
 import (
-	"net/http"
+	"path"
 
 	v1 "github.com/cyp57/user-api/app/api/v1"
 	"github.com/cyp57/user-api/app/middleware"
@@ -14,8 +14,8 @@ import (
 // InitRoute ..
 func InitRoute() *gin.Engine {
 
-	// Creates a router without any middleware by default
-	router := gin.New()
+	router := gin.Default()
+
 	httpRequestLimit := utils.GetYamlInt(cnst.HttpRequestLimit)
 	httpport := utils.GetYaml(cnst.HTTPPort)
 
@@ -23,48 +23,64 @@ func InitRoute() *gin.Engine {
 		router.Use(limit.Limit(httpRequestLimit))
 	}
 
-	//mode := utils.GetEnv(cnst.Mode)
-	router.Use(gin.Logger())
-	// router.Use(middlewares.GinBodyLogMiddleware(logging.Debug, mode))
-
-	// Recovery middleware recovers from any panics and writes a 500 if there was one.
-	router.Use(gin.Recovery())
-
-	// If use gin.Logger middlewares, it send duplicated request.
+	router.Use(new(middleware.MiddlewareHandler).CorsMiddleware())
 	setRoute(router)
 
-	router.Run(":" + httpport) // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
+	router.Run(":" + httpport)
 	return router
 }
 
 func setRoute(router *gin.Engine) {
-	ua := new(v1.UserApi)
-	auth := new(v1.AuthenticationApi)
-	/// middleware check token
+
+	api := v1.InitApiUserImpl()
+
 	middleHandler := new(middleware.MiddlewareHandler)
 
-	//// get servicename
 	serviceName := utils.GetYaml(cnst.ServiceName)
 	router.GET(serviceName, root)
 	v1 := router.Group(serviceName)
 	v1.Use(middleHandler.InterceptLog())
 	{
-		
-		v1.GET("/ping", func(c *gin.Context) {
-			c.JSON(http.StatusOK, gin.H{
-				"message": "pong",
-			})
-		})
-		v1.POST("/signup", ua.CreatePerson)
-		v1.POST("/login", auth.Login)
-
-		// path := new(pathRoute.Path)
-		// pathGroup := v1.Group("/" + setting.SetupSetting.RouterGroup)
-		// path.PathRoute(pathGroup)
+		nonAuthGroup := v1.Group(path.Join("user"))
+		nonAuthGroup.POST("/login", api.Login)
+		nonAuthGroup.POST("/signup", api.CreateUser)
 	}
+	{
+		reqAuthGroup := v1.Group(path.Join("user"))
+		reqAuthGroup.Use(middleHandler.ValidateToken)
+		reqAuthGroup.PUT("/:uuid", api.EditUser) //// customer ,admin
+	    reqAuthGroup.GET("/:uuid", api.GetUser) // customer admin
+	}
+
+	// nonAuthGroup := router.Group(serviceName)
+	// nonAuthGroup.Use(middleHandler.InterceptLog())
+	// {
+	// 	nonAuthGroup.POST("/login", api.Login)
+	// 	nonAuthGroup.POST("/signup", api.CreateUser)
+	// }
+
+	// reqAuthGroup := router.Group(serviceName)
+	// reqAuthGroup.Use(middleHandler.InterceptLog())
+	// reqAuthGroup.Use(middleHandler.ValidateToken)
+	// {
+	// 	// v1.POST("/admin/signup", api.CreateUser) for admin only
+
+	// 	reqAuthGroup.PUT("/user/:id", api.EditUser) //// customer ,admin
+	// 	// v1.PATCH("/user", api.EditUser)   //// customer ,admin
+	// 	// v1.get("/user", api.EditUser)  list  / admin
+	// 	// v1.get("/user", api.EditUser)  by id // customer admin
+	// 	// v1.PUT("/user", api.EditUser)  delete  //admin
+
+	// 	// v1.PUT forgot pass  customer admin
+	// 	// v1.PUT change pass  customer admin
+
+	// 	// path := new(pathRoute.Path)
+	// 	// pathGroup := v1.Group("/" + setting.SetupSetting.RouterGroup)
+	// 	// path.PathRoute(pathGroup)
+	// }
 
 }
 
-func root(c *gin.Context) { //{"message":"OK"}
+func root(c *gin.Context) {
 	c.JSON(200, gin.H{"message": "OK"})
 }

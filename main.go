@@ -1,8 +1,7 @@
 package main
 
 import (
-	"fmt"
-	"log"
+
 	"net/http"
 	"net/url"
 	"time"
@@ -20,11 +19,12 @@ import (
 	"github.com/cyp57/user-api/utils"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
+	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 )
 
 const (
-	FileEnv = ".env"
+	FileEnv = "config/.env"
 	FileIni = "config/app.ini"
 )
 
@@ -35,15 +35,14 @@ func main() {
 }
 
 func initService() {
-	initConfigMode()
-	lslog.InitLogrus()
-	initSetting()
-	// cb := &lslog.LslogObj{Data: nil, Txt: "print LA FAt", Level: logrus.FatalLevel}
-	// cb.LogrusPrint()
+	lslog.InitLogrus() //checked
+	initConfigMode()   //checked
 
-	mongodb.MongoDbConnect()
-	initFusionAuth()
-	route.InitRoute()
+	initSetting() //checked
+
+	mongodb.MongoDbConnect() //checked
+	initFusionAuth()         //checked
+	route.InitRoute()  //checked
 }
 
 func initConfigMode() {
@@ -58,7 +57,7 @@ func initConfigMode() {
 func InitConfigYaml(env string) {
 
 	var viperYaml = viper.New()
-	viperYaml.SetConfigName(env) // ชื่อไฟล์ Config
+	viperYaml.SetConfigName(env)
 
 	viperYaml.SetConfigType("yaml")
 	viperYaml.AddConfigPath("config")
@@ -66,51 +65,18 @@ func InitConfigYaml(env string) {
 	// เริ่มการค้นหาไฟล์ Config และอ่านไฟล์
 	err := viperYaml.ReadInConfig()
 	if err != nil {
-		log.Fatalln("error on parsing configuration filet")
+		// log.Fatalln(cnst.ErrParseConfigYaml)
+		ls := &lslog.LslogObj{Data: nil, Txt: cnst.ErrParseConfigYaml, Level: logrus.FatalLevel}
+		ls.Print()
 	} else {
 		utils.SetViperYaml(viperYaml)
 	}
 }
 
-//////////////////////////////
-// func initService() {
-// 	initLogging()
-// 	initConfigMode()
-// 	initIni()
-// 	initOtherService()
-// 	initRouter()
-// }
-
-// func initOtherService() {
-// 	authenservice.GetToken()
-// 	initFusionAuth()
-// }
-
-// func initLogging() {
-
-// 	var logConfig structs.LogConfiguration
-// 	logConfig.Server = utils.GetEnv(cnst.ServerLogging)
-// 	logConfig.ServicePath = path.Join(setting.ApiGroupSetting.LoggingGroup, setting.ApiEndpointSetting.LoggingService)
-// 	logConfig.AppId = utils.GetEnv(cnst.AppId)
-// 	logConfig.AppName = utils.GetEnv(cnst.AppName)
-// 	logConfig.Level = utils.GetEnv(cnst.LogLevel)
-// 	logConfig.OnServerLog = utils.GetEnvBool(cnst.OnServerLog)
-// 	logging.InitLog(logConfig)
-// }
-
 func initSetting() {
 	init := new(setting.ApiSetting)
 	init.Setup(FileIni)
 }
-
-// func initConfigMode() {
-// 	mode := utils.GetEnv(cnst.Mode)
-// 	if mode == "prod" {
-// 		rlimit.Setup()
-// 		gin.SetMode(gin.ReleaseMode)
-// 	}
-// 	conf.InitConfigYaml(mode)
-// }
 
 func initFusionAuth() {
 	var host = utils.GetYaml(cnst.FusionHost)
@@ -121,27 +87,18 @@ func initFusionAuth() {
 
 	var baseURL, err = url.Parse(host)
 	if err != nil {
-		log.Fatalln(err)
+		ls := &lslog.LslogObj{Data: nil, Txt: err.Error(), Level: logrus.FatalLevel}
+		ls.Print()
 	}
 	// Construct a new FusionAuth Client
 	Auth := fusionauth.NewClient(httpClient, baseURL, apiKey)
-	fmt.Println("Auth= = ", Auth)
-	fmt.Println("Auth*= = ", *Auth)
- // for production code, don't ignore the error!
- tenantResponse, err := Auth.RetrieveTenants() 
-    if err != nil {
-		log.Fatalln(err.Error())
+
+	// for production code, don't ignore the error!
+	_, err = Auth.RetrieveTenants()
+	if err != nil {
+		ls := &lslog.LslogObj{Data: nil, Txt: err.Error(), Level: logrus.FatalLevel}
+		ls.Print()
 	}
- fmt.Print(len(tenantResponse.Tenants))
-	
 
 	new(fusionauthPkg.Fusionauth).InitConnection(Auth)
 }
-
-
-
-// func initRouter() {
-// 	routersInit := routers.InitRoute()      ///initial path from gin
-// 	port := utils.GetYaml(appCnst.HTTPPort) ///get httpport from .env
-// 	routersInit.Run(":" + port)
-// }

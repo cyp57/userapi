@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"fmt"
 	"reflect"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -20,7 +21,12 @@ func StructToM(v interface{}) (primitive.M, error) {
 	for i := 0; i < val.NumField(); i++ {
 		field := val.Field(i)
 		fieldName := typ.Field(i).Tag.Get("bson")
-
+		fmt.Println("i :", i)
+		fmt.Println("fieldName :", fieldName)
+		fmt.Println("len",len(fieldName))
+		if IsEmptyString(fieldName) {
+			continue
+		}
 		if field.Kind() == reflect.Struct && field.Type() == reflect.TypeOf(primitive.ObjectID{}) {
 			// If the field is an ObjectID, convert it to Hex
 			result[fieldName] = field.Interface().(primitive.ObjectID).Hex()

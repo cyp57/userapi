@@ -8,22 +8,16 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// type IResponseHandler interface{
-// 	SuccessResponse(*gin.Context,int,any,string)
-// 	ErrResponse(*gin.Context,int,string)
+type IResponseHandler interface{
+	SuccessResponse(*gin.Context,int,interface{},string)
+	ErrResponse(*gin.Context,int,string)
+	DataResponse(*gin.Context,int,interface{})
+}
 
-// }
 
 type (
 	ResponseHandler struct {
-		Data    any    `json:"data"`
-		Message string `json:"message"`
-		ErrorCode int `json:"errorCode"`
-		ErrorMessage   string  `json:"errorMessage"`		
-	}
-
-	ResponseHandlerV2 struct {
-		Data    any    `json:"data"`
+		Data    interface{}    `json:"data"`
 		Message string `json:"message"`
 		Status bool `json:"status"`
 		Error *ErrorRes `json:"error"`
@@ -33,52 +27,32 @@ type (
 		ErrCode int `json:"errCode"`
 		ErrMsg string `json:"errMsg"`
 	}
-	
 )
 
 // var resp = &ResponseHandler{}
 var ErrCode = 0
 
-
-
-// func SetErrorCode(errCode int) IResponseHandler{
-// 	resp.ErrorCode = errCode
-// 	return resp
-// }
-
-
-// func (r *ResponseHandler) SuccessResponse(c *gin.Context , statusCode int , data any, message string)  {
-// 	c.JSON(statusCode, &ResponseHandler{Data: data , Message: message})
-// }
-
-// func (r *ResponseHandler) ErrResponse(c *gin.Context , statusCode int , message string)  {
-// 	c.JSON(statusCode, &ResponseHandler{ErrorMessage: message,ErrorCode: resp.ErrorCode})
-// }
-
-
-
-//V2
-type IResponseHandler interface{
-	SuccessResponse(*gin.Context,int,any,string)
-	ErrResponse(*gin.Context,int,string)
-}
-
-
 func SetErrorCode(errCode int) {
 	ErrCode = errCode
 }
 
-func (r *ResponseHandlerV2) SuccessResponse(c *gin.Context , statusCode int , data any, message string)  {
-	c.JSON(statusCode, &ResponseHandlerV2{Data: data , Message: message,Status: true})
+func (r *ResponseHandler) SuccessResponse(c *gin.Context , statusCode int , data interface{}, message string)  {
+	c.JSON(statusCode, &ResponseHandler{Data: data , Message: message,Status: true})
 }
 
-func (r *ResponseHandlerV2) ErrResponse(c *gin.Context , statusCode int , message string)  {
+func (r *ResponseHandler) ErrResponse(c *gin.Context , statusCode int , message string)  {
 	if ErrCode != 0 && message == "" {
 	errMsg	:= cnst.GetErrMsg(ErrCode)
 	message = errMsg
 	}
-	c.JSON(statusCode, &ResponseHandlerV2{Status: false,Error: &ErrorRes{ErrMsg: message,ErrCode: ErrCode}})
+	c.JSON(statusCode, &ResponseHandler{Status: false,Error: &ErrorRes{ErrMsg: message,ErrCode: ErrCode}})
 }
+
+func (r *ResponseHandler) DataResponse(c *gin.Context , statusCode int , data interface{}) {
+	c.JSON(statusCode, data)
+}
+
+
 
 
 

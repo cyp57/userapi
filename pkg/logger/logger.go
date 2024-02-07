@@ -15,23 +15,18 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// type bodyLogWriter struct {
-// 	gin.ResponseWriter
-// 	body *bytes.Buffer
-// }
-
 type ResponseWriter struct {
 	gin.ResponseWriter
 	Body   *bytes.Buffer
 	status int
 }
 
-type Logger interface {
-	Print() Logger
+type ILogger interface {
+	Print() ILogger
 	Save()
 	SetQuery(c *gin.Context)
 	SetBody(c *gin.Context)
-	SetResponse(c *gin.Context,rw *ResponseWriter)
+	SetResponse(c *gin.Context, rw *ResponseWriter)
 }
 
 type LoggerObj struct {
@@ -45,7 +40,7 @@ type LoggerObj struct {
 	Response   interface{} `json:"response"`
 }
 
-func (l *LoggerObj) Print() Logger {
+func (l *LoggerObj) Print() ILogger {
 	utils.Debug(l)
 	return l
 }
@@ -61,7 +56,7 @@ func (l *LoggerObj) Save() {
 }
 func (l *LoggerObj) SetQuery(c *gin.Context) {
 	// Retrieve all query parameters as a map
-	queryParams :=  c.Request.URL.Query()
+	queryParams := c.Request.URL.Query()
 
 	// Log all query parameters
 	log.Printf("Received query parameters: %v", queryParams)
@@ -82,14 +77,14 @@ func (l *LoggerObj) SetBody(c *gin.Context) {
 		// Log the request body
 		log.Printf("Received request body: %s", body)
 		// Declare an empty interface{}
-	var result interface{}
+		var result interface{}
 
-			// Unmarshal the byte slice into the empty interface
-			err = json.Unmarshal(body, &result)
-			if err != nil {
+		// Unmarshal the byte slice into the empty interface
+		err = json.Unmarshal(body, &result)
+		if err != nil {
 			fmt.Println("Error:", err)
 			return
-			}
+		}
 
 		l.Body = result
 		// Rewind the request body so it can be read again if needed
@@ -100,8 +95,9 @@ func (l *LoggerObj) SetResponse(c *gin.Context, rw *ResponseWriter) {
 
 	// Store the response writer to intercept the response
 	resMap := make(map[string]interface{})
+	// var resMap interface{}
 	err := json.Unmarshal(rw.Body.Bytes(), &resMap)
-	if err != nil {		
+	if err != nil {
 		// panic(err)
 		fmt.Println("Error:", err)
 		return
@@ -110,7 +106,6 @@ func (l *LoggerObj) SetResponse(c *gin.Context, rw *ResponseWriter) {
 	l.StatusCode = rw.Status()
 	l.Response = resMap
 }
-
 
 func (rw *ResponseWriter) Write(b []byte) (int, error) {
 	rw.Body.Write(b)

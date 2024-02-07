@@ -10,22 +10,24 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type IUser interface {
+	CreateUser(*gin.Context)
+	EditUser(*gin.Context)
+	GetUser(*gin.Context)
+}
+
 type UserApi struct{}
 
-func (u *UserApi) CreatePerson(c *gin.Context) {
-	var jsonbody model.UserInfo
+func (u *UserApi) CreateUser(c *gin.Context) {
+	var jsonbody model.RegistrationInfo
 
 	///1.check
 	if err := c.ShouldBindJSON(&jsonbody); err != nil {
-		// log.Fatalln(err.Error())
-		// responseHandler.StatusSaveResponse(structs.Jsonresponse{Message: err.Error(), StatusCode: http.StatusBadRequest}, c)
-		// return
 		fmt.Println("ShouldBindJSON")
 		resp.ErrResponse(c, http.StatusBadRequest, err.Error())
 		return
 	} else {
 		fusionAppId := utils.GetYaml("FusionAppId")
-
 		result, err := userCtrlV1.CreateUser(&jsonbody, fusionAppId)
 		if err != nil {
 			resp.ErrResponse(c, http.StatusBadRequest, err.Error())
@@ -38,17 +40,24 @@ func (u *UserApi) CreatePerson(c *gin.Context) {
 
 }
 
-func (u *UserApi) EditPerson(c *gin.Context) {
+func (u *UserApi) EditUser(c *gin.Context) {
 	var jsonbody model.UserInfo
-
+	uuid := c.Param("uuid")
 	///1.check
 	if err := c.ShouldBindJSON(&jsonbody); err != nil {
-		// log.Fatalln(err.Error())
-		// responseHandler.StatusSaveResponse(structs.Jsonresponse{Message: err.Error(), StatusCode: http.StatusBadRequest}, c)
-		// return
+		fmt.Println("ShouldBindJSON")
+		resp.ErrResponse(c, http.StatusBadRequest, err.Error())
+		return
+	} else {
+		result, err := userCtrlV1.EditUser(uuid, &jsonbody)
+		if err != nil {
+			resp.ErrResponse(c, http.StatusBadRequest, err.Error())
+			return
+		} else {
+			resp.SuccessResponse(c, http.StatusOK, result, cnst.UpdateSuccess)
+			return
+		}
 	}
-
-	c.JSON(200, jsonbody)
 
 }
 
@@ -60,6 +69,8 @@ func (u *UserApi) PatchPerson(c *gin.Context) {
 		// log.Fatalln(err.Error())
 		// responseHandler.StatusSaveResponse(structs.Jsonresponse{Message: err.Error(), StatusCode: http.StatusBadRequest}, c)
 		// return
+	} else {
+
 	}
 
 	c.JSON(200, jsonbody)
@@ -73,7 +84,17 @@ func (u *UserApi) ListPerson(c *gin.Context) {
 }
 
 // get obj
-func (u *UserApi) ViewPerson(c *gin.Context) {
+func (u *UserApi) GetUser(c *gin.Context) {
+	uuid := c.Param("uuid")
 
-	c.JSON(200, nil)
+	if !utils.IsEmptyString(uuid) {
+		result, err := userCtrlV1.GetUserInfo(uuid)
+		if err != nil {
+			resp.ErrResponse(c, http.StatusInternalServerError, err.Error())
+		} else {
+			resp.DataResponse(c, http.StatusOK, &result)
+		}
+	} else {
+		resp.ErrResponse(c, http.StatusBadRequest, cnst.ErrReqPathParamUuid)
+	}
 }

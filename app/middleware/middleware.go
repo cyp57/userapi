@@ -2,13 +2,21 @@ package middleware
 
 import (
 	"bytes"
+	"fmt"
+	"net/http"
 
 	"time"
 
+	response "github.com/cyp57/user-api/app/api-helper"
+	"github.com/cyp57/user-api/cnst"
+	"github.com/cyp57/user-api/pkg/fusionauth"
 	"github.com/cyp57/user-api/pkg/logger"
 
 	"github.com/gin-gonic/gin"
 )
+
+
+var resp = &response.ResponseHandler{}
 
 type MiddlewareHandler struct{}
 
@@ -21,9 +29,8 @@ func (m *MiddlewareHandler) InterceptLog() gin.HandlerFunc {
 			Ip:     c.ClientIP(),
 			Method: c.Request.Method,
 			Path:   c.Request.RequestURI,
-			// StatusCode: c.Request.Response.StatusCode,
 		}
-		
+
 		log.SetQuery(c)
 		log.SetBody(c)
 
@@ -43,33 +50,74 @@ func (m *MiddlewareHandler) InterceptLog() gin.HandlerFunc {
 	}
 }
 
-// Custom response writer to intercept response data
-// type responseWriter struct {
-// 	gin.ResponseWriter
-// 	body   *bytes.Buffer
-// 	status int
-// }
+func (m *MiddlewareHandler) ValidateToken(c *gin.Context) {
+	
+	if len(c.Request.Header.Get("token")) != 0 {
+		token := c.Request.Header.Get("token")
+		fmt.Println("token = = ",token)
+		decode, err := new(fusionauth.Fusionauth).ValidateToken(token)
+		if err != nil || decode.StatusCode == http.StatusUnauthorized{
+			resp.ErrResponse(c, http.StatusUnauthorized, cnst.ErrTokenExpired)
+			c.Abort()
+		}
+		fmt.Println("decode = =", decode)
+		uuid := decode.Jwt.Sub
+		// c.Set()
+		c.Set("userId",uuid)
+		c.Next()
+	} else {
+		resp.ErrResponse(c, http.StatusUnauthorized, cnst.ErrreqToken)
+		c.Abort()
+	}
+}
 
-// In this example, the responseWriter now also stores the status code. The middleware checks if the response is JSON based on the "Content-Type" header and then logs the JSON response, body, and status code accordingly.
-
-// Make sure to adjust the middleware and route logic according to your specific use case and requirements.
-
-
-
-/// cors gin
+// / cors gin
 // corsMiddleware handles CORS headers
+func (m *MiddlewareHandler) CorsMiddleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+		c.Writer.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, PATCH")
+		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
 
-// func corsMiddleware() gin.HandlerFunc {
+		if c.Request.Method == "OPTIONS" {
+			c.AbortWithStatus(http.StatusNoContent)
+			return
+		}
+
+		c.Next()
+	}
+}
+
+// // validate role
+// func AuthorizeRole(expectRole ...string) gin.HandlerFunc {
 // 	return func(c *gin.Context) {
-// 		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
-// 		c.Writer.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
-// 		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
+// 		user, exists := c.Get("user")
+// 		if !exists {
+// 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
+// 			return
+// 		}
 
-// 		if c.Request.Method == "OPTIONS" {
-// 			c.AbortWithStatus(http.StatusNoContent)
+// 		userRoles, ok := user.(*models.User).Roles
+// 		if !ok {
+// 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
+// 			return
+// 		}
+
+// 		// Check if the user has the required role
+// 		if !hasRole(userRoles, role) {
+// 			c.AbortWithStatusJSON(http.StatusForbidden, gin.H{"error": "Forbidden"})
 // 			return
 // 		}
 
 // 		c.Next()
 // 	}
 // }
+
+func hasRole(userRoles []string, role string) bool {
+	for _, r := range userRoles {
+		if r == role {
+			return true
+		}
+	}
+	return false
+}

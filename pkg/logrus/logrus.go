@@ -55,7 +55,7 @@ func (ls *LslogObj) Print() {
 		logrus.WithFields(logrus.Fields{
 			"json": ls.Data,
 		}).Fatal(ls.Txt)
-	default:
+	default: // default as debug level
 		logrus.WithFields(logrus.Fields{
 			"json": ls.Data,
 		}).Debug(ls.Txt)

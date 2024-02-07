@@ -1,7 +1,7 @@
 package v1
 
 import (
-	"fmt"
+	
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -11,11 +11,15 @@ import (
 	"github.com/cyp57/user-api/model"
 )
 
+type IAuthentication interface{
+	Login(c *gin.Context) 
+
+}
+
 type AuthenticationApi struct{}
 
 func (a *AuthenticationApi) Login(c *gin.Context) {
 	var loginObj model.LoginInfo
-	fmt.Println("loginObj = =", loginObj)
 	if err := c.ShouldBindJSON(&loginObj); err != nil {
 		resp.ErrResponse(c, http.StatusBadRequest, err.Error())
 		return

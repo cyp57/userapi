@@ -1,5 +1,5 @@
 
-POST http://localhost:4570/login HTTP/1.1
+POST http://localhost:4570/userapi/user/login HTTP/1.1
 content-type: application/json
 
 # {
@@ -8,6 +8,6 @@ content-type: application/json
 # }
 
 {
-    "userName": "chanyapatshell6@gmail.com",
-    "password": "12345678aADSD"
+    "userName": "chanyapatshell9@gmail.com",
+    "password": "12345678"
 }

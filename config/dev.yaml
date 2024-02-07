@@ -5,7 +5,7 @@ HTTPPort : 4570
 ReadTimeout : 60s
 WriteTimeout : 60s
 
-ServiceName : 
+ServiceName : userapi
 HttpRequestLimit : 10
 
 # #config database dev

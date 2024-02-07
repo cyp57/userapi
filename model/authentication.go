@@ -13,5 +13,6 @@ type LoginResponse struct {
 	Token string `json:"token"`
 	RefreshToken string `json:"refreshToken"`
 	Uuid string `json:"uuid"`
+	Roles []string  `json:"roles"`
 	
 }

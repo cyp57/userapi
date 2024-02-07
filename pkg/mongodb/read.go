@@ -17,9 +17,9 @@ func FindOneDocument(col string, filter primitive.M) (result primitive.M, err er
 	// other errors occur during the operation
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
-			return
+			return nil , err
 		} else {
-			return
+			return nil , err
 		}
 	}
 

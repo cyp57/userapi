@@ -1,10 +1,55 @@
-POST http://localhost:4570/signup HTTP/1.1
-content-type: application/json
+
+@hostname = localhost
+@port = 4570
+@host = {{hostname}}:{{port}}
+@contentType = application/json
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImVmYjg2M2VlYyJ9.eyJhdWQiOiI0MGJjYmUwOC0yY2Y4LTQ1ZTItYTU5Zi1jNGM2NjEzZjRkZWYiLCJleHAiOjE3MDcyMjE5MTgsImlhdCI6MTcwNzIxNDcxOCwiaXNzIjoiYWNtZS5jb20iLCJzdWIiOiIwMzU5NzcxOS0zMzNkLTRlNDEtYjIyYS02NDMyYmUyZGYxMTUiLCJqdGkiOiJlNWVjNDgyNS1hOWRkLTQ4NmUtYWNlNC1mNjM4YzFiMWIwZDAiLCJhdXRoZW50aWNhdGlvblR5cGUiOiJQQVNTV09SRCIsImVtYWlsIjoiY2hhbnlhcGF0c2hlbGw5QGdtYWlsLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJjaGFueWFwYXQ5IiwiYXBwbGljYXRpb25JZCI6IjQwYmNiZTA4LTJjZjgtNDVlMi1hNTlmLWM0YzY2MTNmNGRlZiIsInJvbGVzIjpbImN1c3RvbWVyIl0sInNpZCI6IjU5MjExM2I1LTQ3YTMtNDA2Ni1iYzBiLThlNDFlMzhlOGU1YSIsImF1dGhfdGltZSI6MTcwNzIxNDcxOCwidGlkIjoiNWE3Mjc3ZmEtNjUzMC1iOTE3LWIzNTMtNGVjZGI5Yjg1ZmM5In0.j5e22cMfpsUugIg9sEzmMLpZEqWHFC9WFADxxoXLVqo
+###
+POST http://{{host}}/userapi/user/login HTTP/1.1
+content-type: {{contentType}}
+
+# {
+#     "userName": "chanyapatshell@hotmail.com",
+#     "password": "0918208741asdasd"
+# }
 
 {
-    "userName": "chanyapat6",
-    "email" : "chanyapatshell6@gmail.com",
-    "password": "12345678",
-    "firstName" : "char",
-	"lastName" : "lchar"
+    "userName": "chanyapatshell9@gmail.com",
+    "password": "12345678"
 }
+
+
+###
+POST http://localhost:4570/signup HTTP/1.1
+content-type: {{contentType}}
+
+{
+    "userName": "chanyapat9",
+    "email" : "chanyapatshell9@gmail.com",
+    "password": "12345678",
+    "firstName" : "char9",
+	"lastName" : "lchar9"
+}
+
+###
+PUT http://{{host}}/userapi/user/03597719-333d-4e41-b22a-6432be2df115 HTTP/1.1
+token: {{token}}
+content-type: {{contentType}}
+
+{
+  "id": "Uc65bf471133a8be51280744dd",
+  "uuid": "03597719-333d-4e41-b22a-6432be2df115",
+  "username": "chanyapat9_username",
+  "email": "chanyapatshell9_edit@gmail.com",
+  "password": "$2a$14$Qys24Fngb4A6O8Bs8o1YQ.UfzWXuLVl42oCLH9Fbycvd8cXUsIeye",
+  "firstName": "char9__edit",
+  "lastName": "lchar9",
+  "age": 10,
+  "created_at": "2024-02-04T08:13:05Z",
+  "updated_at": "2024-02-04T08:13:05Z"
+}
+
+###
+GET http://{{host}}/userapi/user/03597719-333d-4e41-b22a-6432be2df115 HTTP/1.1
+token: {{token}}
+content-type: {{contentType}}
