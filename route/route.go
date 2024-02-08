@@ -49,7 +49,9 @@ func setRoute(router *gin.Engine) {
 		reqAuthGroup := v1.Group(path.Join("user"))
 		reqAuthGroup.Use(middleHandler.ValidateToken)
 		reqAuthGroup.PUT("/:uuid", api.EditUser) //// customer ,admin
+		reqAuthGroup.PATCH("/:uuid", api.PatchUser) //// customer ,admin
 	    reqAuthGroup.GET("/:uuid", api.GetUser) // customer admin
+		reqAuthGroup.GET("/", api.GetUserList) // list for admin 
 	}
 
 	// nonAuthGroup := router.Group(serviceName)

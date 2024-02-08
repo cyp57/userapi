@@ -88,29 +88,37 @@ func (f *Fusionauth) Register() (response *fusionauth.RegistrationResponse, err 
 	return response, nil
 }
 
-// Example request to update user fields
-// request := map[string]interface{}{
-// 	"registration": map[string]interface{}{
-// 		"firstName": "John", // Update the first name
-// 		"lastName":  "Doe",  // Update the last name
-// 	},
-// 	"data": map[string]interface{}{
-// 		"customField": "new_value", // Update a custom field
-// 	},
-// 	// Add more fields as needed
-// }
+
 
 func (f *Fusionauth) PatchUser(uuid string) (*fusionauth.UserResponse, error) {
 
-	request := map[string]interface{}{
-		"user": map[string]interface{}{
-			"firstName":   f.FirstName,
-			"lastName":    f.LastName,
-			"email":       f.Email,
-			"mobilePhone": f.MobilePhone,
-		},
+	// request := map[string]interface{}{
+	// 	"user": map[string]interface{}{
+	// 		"firstName":   f.FirstName,
+	// 		"lastName":    f.LastName,
+	// 		"email":       f.Email,
+	// 		"mobilePhone": f.MobilePhone,
+	// 	},
+	// }
+
+	request := make(map[string]interface{})
+	user := make(map[string]interface{})
+	if !utils.IsEmptyString(f.FirstName) {
+		user["firstName"] = f.FirstName
 	}
+	if !utils.IsEmptyString(f.LastName) {
+		user["lastName"] = f.LastName
+	}
+	if !utils.IsEmptyString(f.Email) {
+		user["email"] = f.Email
+	}
+	if !utils.IsEmptyString(f.MobilePhone) {
+		user["mobilePhone"] = f.MobilePhone
+	}
+	request["user"] = user
+
 	response, restErr, err := AuthClient.PatchUser(uuid, request)
+	utils.Debug(response)
 	if err != nil {
 		resHandler.SetErrorCode(4001)
 		return nil, err
@@ -120,6 +128,7 @@ func (f *Fusionauth) PatchUser(uuid string) (*fusionauth.UserResponse, error) {
 		resHandler.SetErrorCode(4002)
 		return nil, restErr
 	}
+	
 	return response, nil
 }
 

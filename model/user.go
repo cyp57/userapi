@@ -25,6 +25,7 @@ type UserInfo struct {
 	FirstName string    `json:"firstName," bson:"firstName"`
 	LastName  string    `json:"lastName," bson:"lastName"`
 	Age       int       `json:"age," bson:"age"`
+	MobilePhone string `json:"mobilePhone," bson:"mobilePhone"`
 	CreatedAt time.Time `json:"created_at,omitempty"` // in this case i settle Username to can't edit
 	UpdatedAt time.Time `json:"updated_at,omitempty" bson:"updated_at"`
 }

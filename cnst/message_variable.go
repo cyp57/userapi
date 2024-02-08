@@ -11,5 +11,6 @@ const (
 	ErrParseConfigYaml  = "error on parsing configuration file"
 	ErrReqPathParamUuid = "require path param <uuid>"
 	ErrTokenExpired = "token expired"
-	ErrreqToken = "Authentication header is missing, require token"
+	ErrReqToken = "Authentication header is missing, require token"
+	ErrSortKeyReq = "error , sortKey require value of sort"
 )

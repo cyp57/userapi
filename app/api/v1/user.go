@@ -13,7 +13,9 @@ import (
 type IUser interface {
 	CreateUser(*gin.Context)
 	EditUser(*gin.Context)
+	PatchUser(*gin.Context)
 	GetUser(*gin.Context)
+	GetUserList(*gin.Context)
 }
 
 type UserApi struct{}
@@ -21,9 +23,8 @@ type UserApi struct{}
 func (u *UserApi) CreateUser(c *gin.Context) {
 	var jsonbody model.RegistrationInfo
 
-	///1.check
 	if err := c.ShouldBindJSON(&jsonbody); err != nil {
-		fmt.Println("ShouldBindJSON")
+
 		resp.ErrResponse(c, http.StatusBadRequest, err.Error())
 		return
 	} else {
@@ -43,9 +44,8 @@ func (u *UserApi) CreateUser(c *gin.Context) {
 func (u *UserApi) EditUser(c *gin.Context) {
 	var jsonbody model.UserInfo
 	uuid := c.Param("uuid")
-	///1.check
+
 	if err := c.ShouldBindJSON(&jsonbody); err != nil {
-		fmt.Println("ShouldBindJSON")
 		resp.ErrResponse(c, http.StatusBadRequest, err.Error())
 		return
 	} else {
@@ -61,36 +61,49 @@ func (u *UserApi) EditUser(c *gin.Context) {
 
 }
 
-func (u *UserApi) PatchPerson(c *gin.Context) {
+func (u *UserApi) PatchUser(c *gin.Context) {
 	jsonbody := make(map[string]interface{})
-
-	///1.check
+	uuid := c.Param("uuid")
 	if err := c.ShouldBindJSON(&jsonbody); err != nil {
-		// log.Fatalln(err.Error())
-		// responseHandler.StatusSaveResponse(structs.Jsonresponse{Message: err.Error(), StatusCode: http.StatusBadRequest}, c)
-		// return
+		resp.ErrResponse(c, http.StatusBadRequest, err.Error())
+		return
 	} else {
-
+		result, err := userCtrlV1.PatchUser(uuid, jsonbody)
+		if err != nil {
+			resp.ErrResponse(c, http.StatusBadRequest, err.Error())
+			return
+		} else {
+			resp.SuccessResponse(c, http.StatusOK, result, cnst.UpdateSuccess)
+			return
+		}
 	}
-
-	c.JSON(200, jsonbody)
-
 }
 
 // list
-func (u *UserApi) ListPerson(c *gin.Context) {
+func (u *UserApi) GetUserList(c *gin.Context) {
+	// filter uuid , email , firstName ,lastName
+	// sort page limit
 
-	c.JSON(200, nil)
+	filterInit := []string{"search", "limit", "page", "sort", "sortKey", "uuid"}
+	filter := utils.CreateReqFilter(c, filterInit)
+
+	result, err := userCtrlV1.GetUserList(filter)
+	fmt.Println("err = =",err)
+	fmt.Println("api : result :", result)
+	if err != nil {
+		resp.ErrResponse(c, http.StatusBadRequest, err.Error())
+	} else {
+		resp.DataResponse(c, http.StatusOK, &result)
+	}
 }
 
-// get obj
 func (u *UserApi) GetUser(c *gin.Context) {
 	uuid := c.Param("uuid")
 
 	if !utils.IsEmptyString(uuid) {
 		result, err := userCtrlV1.GetUserInfo(uuid)
 		if err != nil {
-			resp.ErrResponse(c, http.StatusInternalServerError, err.Error())
+			resp.ErrResponse(c, http.StatusBadRequest, err.Error())
 		} else {
 			resp.DataResponse(c, http.StatusOK, &result)
 		}

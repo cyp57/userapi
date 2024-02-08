@@ -66,7 +66,7 @@ func (m *MiddlewareHandler) ValidateToken(c *gin.Context) {
 		c.Set("userId",uuid)
 		c.Next()
 	} else {
-		resp.ErrResponse(c, http.StatusUnauthorized, cnst.ErrreqToken)
+		resp.ErrResponse(c, http.StatusUnauthorized, cnst.ErrReqToken)
 		c.Abort()
 	}
 }

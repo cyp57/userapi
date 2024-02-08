@@ -11,7 +11,7 @@ import (
 // filter : condition
 // update : data
 // arrayfilter : filter for array case
-func UpdateDocument(collectionName string, filter primitive.M, update primitive.M, arrayfilter []interface{}) (interface{}, error) {
+func UpdateDocument(collectionName string, filter primitive.M, update primitive.M, arrayfilter []interface{}) (primitive.M, error) {
 
 	exp := 5 * time.Second
 	ctx, cancel := context.WithTimeout(context.Background(), exp)
@@ -22,17 +22,20 @@ func UpdateDocument(collectionName string, filter primitive.M, update primitive.
 		Filters: arrayfilter,
 	}
 
-	upsert := true
-	after := options.After
-	opts := options.FindOneAndUpdateOptions{
-		Upsert:         &upsert,
-		ArrayFilters:   &arrayfilterOpts,
-		ReturnDocument: &after,
+	opts := &options.FindOneAndUpdateOptions{}
+	// opts := options.FindOneAndUpdateOptions{
+	// 	Upsert:         &upsert,
+	// 	ArrayFilters:   &arrayfilterOpts,
+	// 	ReturnDocument: &after,
+	// }
+	opts.SetUpsert(true)
+	if arrayfilter != nil {
+		opts.SetArrayFilters(arrayfilterOpts)
 	}
 
 	var updatedDocument primitive.M
 
-	err := Database.Collection(collectionName).FindOneAndUpdate(ctx, filter, update, &opts).Decode(&updatedDocument)
+	err := Database.Collection(collectionName).FindOneAndUpdate(ctx, filter, update, opts).Decode(&updatedDocument)
 	if err != nil {
 		// ErrNoDocuments means that the filter did not match any documents in
 		// the collection.
