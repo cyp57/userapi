@@ -52,6 +52,7 @@ func setRoute(router *gin.Engine) {
 		reqAuthGroup.PATCH("/:uuid", api.PatchUser) //// customer ,admin
 	    reqAuthGroup.GET("/:uuid", api.GetUser) // customer admin
 		reqAuthGroup.GET("/", api.GetUserList) // list for admin 
+		reqAuthGroup.DELETE("/:uuid", api.DeleteUser) // customer admin
 	}
 
 	// nonAuthGroup := router.Group(serviceName)

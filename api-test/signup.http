@@ -3,7 +3,7 @@
 @port = 4570
 @host = {{hostname}}:{{port}}
 @contentType = application/json
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImVmYjg2M2VlYyJ9.eyJhdWQiOiI0MGJjYmUwOC0yY2Y4LTQ1ZTItYTU5Zi1jNGM2NjEzZjRkZWYiLCJleHAiOjE3MDczOTM1ODgsImlhdCI6MTcwNzM4NjM4OCwiaXNzIjoiYWNtZS5jb20iLCJzdWIiOiIwMzU5NzcxOS0zMzNkLTRlNDEtYjIyYS02NDMyYmUyZGYxMTUiLCJqdGkiOiJlMzlmNDE5ZC04YzJmLTQxM2MtOWEyOS1iZGJiNGIzNWE2ZjUiLCJhdXRoZW50aWNhdGlvblR5cGUiOiJQQVNTV09SRCIsImVtYWlsIjoiY2hhbnlhcGF0c2hlbGw5X3BhdGNoQGdtYWlsLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJjaGFueWFwYXQ5IiwiYXBwbGljYXRpb25JZCI6IjQwYmNiZTA4LTJjZjgtNDVlMi1hNTlmLWM0YzY2MTNmNGRlZiIsInJvbGVzIjpbImN1c3RvbWVyIl0sInNpZCI6IjhmYzM1ODdlLWRiZDUtNDZiMC05ODIwLTg1MWUwZWQ3Yjc3MyIsImF1dGhfdGltZSI6MTcwNzM4NjM4OCwidGlkIjoiNWE3Mjc3ZmEtNjUzMC1iOTE3LWIzNTMtNGVjZGI5Yjg1ZmM5In0.i5o4qmdvbCg_TOqa_5acrlRBwI8GbeW0z3HCvJWtlJY
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImVmYjg2M2VlYyJ9.eyJhdWQiOiI0MGJjYmUwOC0yY2Y4LTQ1ZTItYTU5Zi1jNGM2NjEzZjRkZWYiLCJleHAiOjE3MDc0ODEwMjgsImlhdCI6MTcwNzQ3MzgyOCwiaXNzIjoiYWNtZS5jb20iLCJzdWIiOiIwMzU5NzcxOS0zMzNkLTRlNDEtYjIyYS02NDMyYmUyZGYxMTUiLCJqdGkiOiJjNzYzNThjOS01ZjczLTQxMzItYTZmZC0yNzJkN2EzN2I2MmQiLCJhdXRoZW50aWNhdGlvblR5cGUiOiJQQVNTV09SRCIsImVtYWlsIjoiY2hhbnlhcGF0c2hlbGw5X3BhdGNoQGdtYWlsLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJjaGFueWFwYXQ5IiwiYXBwbGljYXRpb25JZCI6IjQwYmNiZTA4LTJjZjgtNDVlMi1hNTlmLWM0YzY2MTNmNGRlZiIsInJvbGVzIjpbImN1c3RvbWVyIl0sInNpZCI6IjcyMzQ0YmUyLWQzMzktNDhiNy1hZjhkLWI0ZDlhMzJiYWUzYiIsImF1dGhfdGltZSI6MTcwNzQ3MzgyOCwidGlkIjoiNWE3Mjc3ZmEtNjUzMC1iOTE3LWIzNTMtNGVjZGI5Yjg1ZmM5In0.otTKiaB3myXjYfTUVHCw4wIzfqmV2Oa_u6_mOnvdQcM
 
 ### login
 POST http://{{host}}/userapi/user/login HTTP/1.1
@@ -22,15 +22,15 @@ content-type: {{contentType}}
 
 
 ### signup
-POST http://localhost:4570/signup HTTP/1.1
+POST http://{{host}}/userapi/user/signup HTTP/1.1
 content-type: {{contentType}}
 
 {
-    "userName": "chanyapat9",
-    "email" : "chanyapatshell9@gmail.com",
+    "userName": "aka01",
+    "email" : "aka01@gmail.com",
     "password": "12345678",
-    "firstName" : "char9",
-	"lastName" : "lchar9"
+    "firstName" : "aka",
+	"lastName" : "double"
 }
 
 ### edit
@@ -70,6 +70,11 @@ content-type: {{contentType}}
 
 
 ### get List
-GET http://{{host}}/userapi/user?limit=3&page=&search=char&uuid=&sort= HTTP/1.1
+GET http://{{host}}/userapi/user?limit=&page=&search=&uuid=&sort=1&sortkey=email HTTP/1.1
+token: {{token}}
+content-type: {{contentType}}
+
+### delete
+DELETE  http://{{host}}/userapi/user/8dc68545-27f7-4084-a1e5-f4a35d2ff0a5 HTTP/1.1
 token: {{token}}
 content-type: {{contentType}}

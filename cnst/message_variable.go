@@ -7,6 +7,7 @@ const (
 	LoginError    = "authentication failed"
 	LoginSuccess  = "login successful"
 	UpdateSuccess = "update successful"
+	DeleteSuccess = "delete successful"
 
 	ErrParseConfigYaml  = "error on parsing configuration file"
 	ErrReqPathParamUuid = "require path param <uuid>"

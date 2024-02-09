@@ -29,3 +29,12 @@ type UserInfo struct {
 	CreatedAt time.Time `json:"created_at,omitempty"` // in this case i settle Username to can't edit
 	UpdatedAt time.Time `json:"updated_at,omitempty" bson:"updated_at"`
 }
+
+
+type ForgotPasswordInfo struct {
+	Email string `json:"email"`
+}
+
+type ChangePasswordInfo struct {
+	
+}

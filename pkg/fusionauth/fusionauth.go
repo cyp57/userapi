@@ -258,3 +258,18 @@ func (f *Fusionauth) GetUserRegistration(uuid string) (*fusionauth.RegistrationR
 
 	return response , nil
 }
+
+
+func (f *Fusionauth) DeleteUser(uuid string) (error){
+	_ ,restErr,err := AuthClient.DeleteUser(uuid)
+	if err != nil {
+		resHandler.SetErrorCode(4009)
+		return err
+	}
+	if restErr != nil {
+		resHandler.SetErrorCode(4010)
+		return restErr 
+	}
+
+	return nil
+}
