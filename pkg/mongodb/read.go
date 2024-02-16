@@ -4,14 +4,22 @@ import (
 	"context"
 	"log"
 
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func FindOneDocument(col string, filter primitive.M) (result primitive.M, err error) {
+func FindOneDocument(col string, filter primitive.M, projection primitive.M) (result primitive.M, err error) {
 
-	err = Database.Collection(col).FindOne(context.TODO(), filter).Decode(&result)
+	var opts *options.FindOneOptions
+	if projection != nil {
+		opts = options.FindOne().SetProjection(projection)
+	} else {
+		opts = options.FindOne().SetProjection(bson.M{"_id": 0})
+	}
+	
+	err = Database.Collection(col).FindOne(context.TODO(), filter,opts).Decode(&result)
 
 	// Prints a message if no documents are matched or if any
 	// other errors occur during the operation

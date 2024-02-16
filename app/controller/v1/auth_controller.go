@@ -1,19 +1,22 @@
 package v1
 
 import (
+	
 
-
-	"github.com/cyp57/user-api/cnst"
 	"github.com/cyp57/user-api/model"
 	"github.com/cyp57/user-api/pkg/fusionauth"
 	"github.com/cyp57/user-api/utils"
 )
 
+
+type IAuthCtrl interface{
+	Login(*model.LoginInfo, string) (interface{}, error)
+	RefreshJwt(*model.RefreshJwt, string) (interface{}, error)
+}
+
 type AuthCtrl struct{}
 
-func (a *AuthCtrl) Login(data model.LoginInfo) (any, error) {
-
-	var appId = utils.GetYaml(cnst.FusionAppId)
+func (a *AuthCtrl) Login(data *model.LoginInfo, appId string) (interface{}, error) {
 
 	var fusionObj fusionauth.Fusionauth
 	fusionObj.LoginId = data.UserName
@@ -24,10 +27,11 @@ func (a *AuthCtrl) Login(data model.LoginInfo) (any, error) {
 	if err != nil {
 		return nil, err
 	}
-	
-	fusionObj.ValidateToken(res.Token)
 
 	resReg, errReg := fusionObj.GetUserRegistration(res.User.Id)
+	utils.Debug("GetUserRegistration :")
+	utils.Debug(resReg)
+
 	if errReg != nil {
 		return nil, err
 	}
@@ -39,4 +43,20 @@ func (a *AuthCtrl) Login(data model.LoginInfo) (any, error) {
 		Roles:        resReg.Registration.Roles}
 
 	return login, nil
+}
+
+func (a *AuthCtrl) RefreshJwt(data *model.RefreshJwt, appId string) (interface{}, error) {
+
+
+	var fusionObj fusionauth.Fusionauth
+	fusionObj.SetApplicationId(appId)
+
+	res ,err := fusionObj.NewAccessToken(data.Token,data.RefreshToken)
+	if err != nil {
+		return nil, err
+	}
+	utils.Debug("NewAccessToken ")
+	utils.Debug(res)
+
+	return res, nil
 }

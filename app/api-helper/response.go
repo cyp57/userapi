@@ -45,7 +45,9 @@ func (r *ResponseHandler) ErrResponse(c *gin.Context , statusCode int , message 
 	errMsg	:= cnst.GetErrMsg(ErrCode)
 	message = errMsg
 	}
-	c.JSON(statusCode, &ResponseHandler{Status: false,Error: &ErrorRes{ErrMsg: message,ErrCode: ErrCode}})
+	// c.JSON(statusCode, &ResponseHandler{Status: false,Error: &ErrorRes{ErrMsg: message,ErrCode: ErrCode}})
+	c.AbortWithStatusJSON(statusCode, &ResponseHandler{Status: false,Error: &ErrorRes{ErrMsg: message,ErrCode: ErrCode}})
+
 }
 
 func (r *ResponseHandler) DataResponse(c *gin.Context , statusCode int , data interface{}) {

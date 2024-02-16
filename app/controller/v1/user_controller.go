@@ -17,6 +17,19 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
+type IUserCtrl interface{
+	CreateUser(data *model.RegistrationInfo, appId string, isAdmin ...bool) (interface{}, error)
+	EditUser(uuid string, data *model.UserInfo) (interface{}, error)
+	PatchUser(uuid string, data map[string]interface{}) (interface{}, error)
+
+	GetUserInfo(uuid string, require ...map[string]interface{}) (*model.UserInfo, error)
+	GetUserList(filter map[string]interface{}) (result *[]model.UserInfo, err error)
+
+	DeleteUser(uuid string) (interface{}, error)
+	ForgotPassword(data *model.ForgotPasswordInfo, appId string) (interface{}, error)
+	ChangePassword(uuid string ,data *model.ChangePasswordInfo, appId string) (interface{}, error)
+}
+
 type UserCtrl struct{}
 
 func (u *UserCtrl) CreateUser(data *model.RegistrationInfo, appId string, isAdmin ...bool) (interface{}, error) {
@@ -39,16 +52,15 @@ func (u *UserCtrl) CreateUser(data *model.RegistrationInfo, appId string, isAdmi
 
 	resp, err := fusionObj.Register()
 	if err != nil {
-		fmt.Println("err :", err.Error())
+
 		return nil, err
 	}
-	fmt.Println("resp.Token :", resp.Token)
-	fmt.Println("resp.RefreshToken :", resp.RefreshToken)
+
 
 	data.Uuid = resp.User.Id
 	hashed, err := utils.HashPassword(data.Password)
 	if err != nil {
-		fmt.Println("err :", err.Error())
+	
 		return nil, err
 	}
 	data.Password = hashed
@@ -61,17 +73,20 @@ func (u *UserCtrl) CreateUser(data *model.RegistrationInfo, appId string, isAdmi
 
 	m, err := utils.StructToM(data)
 	if err != nil {
-		fmt.Println("err :", err.Error())
+		
 		return nil, err
 	}
 	collectionName := setting.CollectionSetting.User
-	fmt.Println("collectionName = = ", collectionName)
-	result, err := mongodb.InsertOneDocument(collectionName, m, "Uc")
+
+	id, err := mongodb.InsertOneDocument(collectionName, m, "Uc")
 	if err != nil {
-		fmt.Println("err :", err.Error())
+
 		return nil, err
 	}
 
+	result := make(primitive.M)
+	result["id"] = id
+	result["uuid"] = resp.User.Id
 	return result, nil
 }
 
@@ -166,12 +181,22 @@ func (u *UserCtrl) PatchUser(uuid string, data map[string]interface{}) (interfac
 	return uuid, err
 }
 
-func (u *UserCtrl) GetUserInfo(uuid string) (*model.UserInfo, error) {
+func (u *UserCtrl) GetUserInfo(uuid string, require ...map[string]interface{}) (*model.UserInfo, error) {
 
+	var err error
+	projection := make(map[string]interface{})
 	collectionName := setting.CollectionSetting.User
 	filter := bson.M{"uuid": uuid}
-	userData, err := mongodb.FindOneDocument(collectionName, filter)
-	utils.Debug(userData)
+	if len(require) > 0 {
+		projection, err = utils.CreateProjection(require[0])
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	userData, err := mongodb.FindOneDocument(collectionName, filter, projection)
+
+	// utils.Debug(userData)
 	if err != nil {
 		return nil, err
 	}
@@ -286,7 +311,6 @@ func (u *UserCtrl) GetUserList(filter map[string]interface{}) (result *[]model.U
 			pipeline = append(pipeline, bson.M{"$limit": limit})
 		}
 
-		fmt.Println("pipeline show")
 		utils.Debug(pipeline)
 	}
 
@@ -338,11 +362,45 @@ func (u *UserCtrl) DeleteUser(uuid string) (interface{}, error) {
 
 	wg.Wait()
 	close(errCh)
-	
+
 	for err := range errCh {
 		if err != nil {
 			return nil, err
 		}
+	}
+
+	return uuid, nil
+}
+
+func (u *UserCtrl) ForgotPassword(data *model.ForgotPasswordInfo, appId string) (interface{}, error) {
+
+	var fusionObj fusionauth.Fusionauth
+	fusionObj.SetApplicationId(appId)
+	fusionObj.LoginId = data.Email
+
+	_, err := fusionObj.ForgotPassword()
+	if err != nil {
+		return nil, err
+	}
+
+	return data.Email, nil
+}
+
+func (u *UserCtrl) ChangePassword(uuid string ,data *model.ChangePasswordInfo, appId string) (interface{}, error) {
+	reqMap := make(map[string]interface{})
+	reqMap["require"] = "[\"email\"]"
+	userData , err:= u.GetUserInfo(uuid,reqMap)
+	if err != nil {
+		return nil, err
+	}
+	
+	var fusionObj fusionauth.Fusionauth
+	fusionObj.SetApplicationId(appId)
+	fusionObj.LoginId = userData.Email
+	
+	err = fusionObj.ChangePassword(data.Password, data.NewPassword)
+	if err != nil {
+		return nil, err
 	}
 
 	return uuid, nil

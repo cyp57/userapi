@@ -7,14 +7,18 @@ import (
 
 	oid "github.com/coolbed/mgo-oid"
 	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
 )
 
 func Debug(data interface{}) {
 	bytes, err := json.MarshalIndent(data, "", "\t")
-	if err != nil {
-		fmt.Println("json.MarshalIndent err:", err.Error())
+	if err != nil { // mean data not obj 
+		logrus.Debugln(data)
+		return
+	} else {
+		logrus.Debugln(string(bytes))
 	}
-	fmt.Println(string(bytes))
+
 }
 
 func Output(data interface{}) []byte {
@@ -61,7 +65,7 @@ func GetCurrentTime() (time.Time, error) {
 	return parsedTime, nil
 }
 
-func CreateReqFilter(c *gin.Context, arrStr []string ) map[string]interface{} {
+func CreateReqFilter(c *gin.Context, arrStr []string) map[string]interface{} {
 	filterMap := make(map[string]interface{})
 	for _, key := range arrStr {
 		if c.Request.URL.Query().Get(key) != "" {
@@ -70,4 +74,23 @@ func CreateReqFilter(c *gin.Context, arrStr []string ) map[string]interface{} {
 	}
 
 	return filterMap
+}
+
+func CreateProjection(require map[string]interface{}) (map[string]interface{}, error) {
+	var sliceStr []string
+	projection := make(map[string]interface{})
+	if require["require"] != nil {
+		reqStr := fmt.Sprint(require["require"])
+		err := json.Unmarshal([]byte(reqStr), &sliceStr)
+		if err != nil {
+			return nil, err
+		}
+
+		for _, value := range sliceStr {
+			projection[value] = 1
+		}
+	} else {
+		projection["_id"] = 0
+	}
+	return projection, nil
 }

@@ -2,7 +2,7 @@ package setting
 
 import (
 	"github.com/cyp57/user-api/cnst"
-	lslog "github.com/cyp57/user-api/pkg/logrus"
+	lrlog "github.com/cyp57/user-api/pkg/logrus"
 	"github.com/go-ini/ini"
 	"github.com/sirupsen/logrus"
 )
@@ -39,13 +39,15 @@ var CollectionSetting = &Collection{}
 
 var cfg *ini.File
 
+
+
 // Setup initialize the configuration instance
-func (a *ApiSetting) Setup(iniPath string) {
+func InitIni(iniPath string) {
 
 	var err error
 	cfg, err = ini.Load(iniPath)
 	if err != nil {
-		ls := &lslog.LslogObj{Data: nil, Txt: err.Error(), Level: logrus.FatalLevel}
+		ls := &lrlog.LrlogObj{Data: nil, Txt: err.Error(), Level: logrus.FatalLevel}
 		ls.Print()
 	}
 
@@ -59,7 +61,7 @@ func (a *ApiSetting) Setup(iniPath string) {
 func mapTo(section string, v interface{}) {
 	err := cfg.Section(section).MapTo(v)
 	if err != nil {
-		ls := &lslog.LslogObj{Data: nil, Txt: err.Error(), Level: logrus.FatalLevel}
+		ls := &lrlog.LrlogObj{Data: nil, Txt: err.Error(), Level: logrus.FatalLevel}
 		ls.Print()
 	}
 }

@@ -9,7 +9,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-type LslogObj struct {
+type LrlogObj struct {
 	Data  interface{}  `json:"data"`
 	Txt   string       `json:"txt"`
 	Level logrus.Level `json:"level"`
@@ -19,7 +19,6 @@ type LslogObj struct {
 func InitLogrus() {
 	logrus.SetFormatter(&nested.Formatter{
 		HideKeys: true,
-		// FieldsOrder:     []string{"application", "module", "method"},
 		TimestampFormat: time.RFC3339,
 		ShowFullLevel:   true,
 		NoFieldsSpace:   false,
@@ -28,16 +27,16 @@ func InitLogrus() {
 		TrimMessages:    false,
 	})
 
-	logrus.Info("Log with RFC3339 timestamp format.")
-
-	// Only log the warning severity or above.
-	// logrus.SetLevel(logrus.DebugLevel)
+	logrus.Debug("Log with RFC3339 timestamp format.")
 	loglevel := utils.GetEnv(cnst.LogLevel)
-	logrus.Info("Logrus level: ", loglevel)
-	logrus.SetLevel(GetLogrusLevel(loglevel))
+	if !utils.IsEmptyString(loglevel) {
+		logrus.Debug("Logrus level: ", loglevel)
+		logrus.SetLevel(getLogrusLevel(loglevel))
+	}
+
 }
 
-func (ls *LslogObj) Print() {
+func (ls *LrlogObj) Print() {
 	switch ls.Level {
 	case logrus.DebugLevel:
 		logrus.WithFields(logrus.Fields{
@@ -63,7 +62,7 @@ func (ls *LslogObj) Print() {
 
 }
 
-func GetLogrusLevel(logLevel string) logrus.Level {
+func getLogrusLevel(logLevel string) logrus.Level {
 	switch logLevel {
 	case "Debug":
 		return logrus.DebugLevel
@@ -79,4 +78,3 @@ func GetLogrusLevel(logLevel string) logrus.Level {
 	return logrus.DebugLevel
 
 }
-

@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/cyp57/user-api/cnst"
-	lslog "github.com/cyp57/user-api/pkg/logrus"
+	lrlog "github.com/cyp57/user-api/pkg/logrus"
 	"github.com/cyp57/user-api/utils"
 	"github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/bson"
@@ -29,7 +29,7 @@ func MongoDbConnect() {
 	userDb := utils.GetYaml(cnst.DBUser)
 	passDb := utils.GetYaml(cnst.DBPassword)
 
-	ls := &lslog.LslogObj{Data: bson.M{"dbHost": dbHost,
+	ls := &lrlog.LrlogObj{Data: bson.M{"dbHost": dbHost,
 		"dbName": dbName, "userDb": userDb, "passDb": passDb}, Txt: "MongoDbConnect()", Level: logrus.DebugLevel}
 	ls.Print()
 
@@ -46,7 +46,7 @@ func MongoDbConnect() {
 	// Connect to MongoDB
 	client, err := mongo.Connect(ctx, clientOptions)
 	if err != nil {
-		ls := &lslog.LslogObj{Data: nil, Txt: err.Error(), Level: logrus.FatalLevel}
+		ls := &lrlog.LrlogObj{Data: nil, Txt: err.Error(), Level: logrus.FatalLevel}
 		ls.Print()
 	}
 
@@ -55,11 +55,10 @@ func MongoDbConnect() {
 	// Check the connection
 	err = client.Ping(context.Background(), nil)
 	if err != nil {
-		ls := &lslog.LslogObj{Data: nil, Txt: err.Error(), Level: logrus.FatalLevel}
+		ls := &lrlog.LrlogObj{Data: nil, Txt: err.Error(), Level: logrus.FatalLevel}
 		ls.Print()
 	} else {
-
-		ls := &lslog.LslogObj{Data: nil, Txt: "DB Connected!", Level: logrus.InfoLevel}
+		ls := &lrlog.LrlogObj{Data: nil, Txt: "DB Connected!", Level: logrus.DebugLevel}
 		ls.Print()
 
 	}

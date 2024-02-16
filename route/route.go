@@ -43,47 +43,28 @@ func setRoute(router *gin.Engine) {
 	{
 		nonAuthGroup := v1.Group(path.Join("user"))
 		nonAuthGroup.POST("/login", api.Login)
+		nonAuthGroup.POST("/refresh/token", api.Refresh)
 		nonAuthGroup.POST("/signup", api.CreateUser)
+		nonAuthGroup.POST("/forgot/password",api.ForgotPassword)
 	}
 	{
 		reqAuthGroup := v1.Group(path.Join("user"))
 		reqAuthGroup.Use(middleHandler.ValidateToken)
-		reqAuthGroup.PUT("/:uuid", api.EditUser) //// customer ,admin
-		reqAuthGroup.PATCH("/:uuid", api.PatchUser) //// customer ,admin
-	    reqAuthGroup.GET("/:uuid", api.GetUser) // customer admin
-		reqAuthGroup.GET("/", api.GetUserList) // list for admin 
-		reqAuthGroup.DELETE("/:uuid", api.DeleteUser) // customer admin
+		reqAuthGroup.POST("/admin/signup",middleHandler.AuthorizeRole("admin") ,api.CreateAdmin)  /// admin
+		reqAuthGroup.PUT("/:uuid",middleHandler.AuthorizeRole("admin","customer") , api.EditUser) //// customer ,admin
+		reqAuthGroup.PATCH("/:uuid",middleHandler.AuthorizeRole("admin","customer") , api.PatchUser) //// customer ,admin
+	    reqAuthGroup.GET("/:uuid",middleHandler.AuthorizeRole("admin","customer") , api.GetUser) // customer admin
+		reqAuthGroup.GET("/",middleHandler.AuthorizeRole("admin") , api.GetUserList) // list for admin 
+		reqAuthGroup.DELETE("/:uuid",middleHandler.AuthorizeRole("admin","customer") , api.DeleteUser) // customer admin
+
+		reqAuthGroup.PUT("/change/password/:uuid",middleHandler.AuthorizeRole("admin","customer") , api.ChangePassword) //// customer ,admin
+
+		
 	}
-
-	// nonAuthGroup := router.Group(serviceName)
-	// nonAuthGroup.Use(middleHandler.InterceptLog())
-	// {
-	// 	nonAuthGroup.POST("/login", api.Login)
-	// 	nonAuthGroup.POST("/signup", api.CreateUser)
-	// }
-
-	// reqAuthGroup := router.Group(serviceName)
-	// reqAuthGroup.Use(middleHandler.InterceptLog())
-	// reqAuthGroup.Use(middleHandler.ValidateToken)
-	// {
-	// 	// v1.POST("/admin/signup", api.CreateUser) for admin only
-
-	// 	reqAuthGroup.PUT("/user/:id", api.EditUser) //// customer ,admin
-	// 	// v1.PATCH("/user", api.EditUser)   //// customer ,admin
-	// 	// v1.get("/user", api.EditUser)  list  / admin
-	// 	// v1.get("/user", api.EditUser)  by id // customer admin
-	// 	// v1.PUT("/user", api.EditUser)  delete  //admin
-
-	// 	// v1.PUT forgot pass  customer admin
-	// 	// v1.PUT change pass  customer admin
-
-	// 	// path := new(pathRoute.Path)
-	// 	// pathGroup := v1.Group("/" + setting.SetupSetting.RouterGroup)
-	// 	// path.PathRoute(pathGroup)
-	// }
 
 }
 
+// for health check
 func root(c *gin.Context) {
 	c.JSON(200, gin.H{"message": "OK"})
 }

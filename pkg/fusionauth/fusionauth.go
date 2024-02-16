@@ -2,13 +2,17 @@ package fusionauth
 
 import (
 	"fmt"
+	"net/http"
+	"net/url"
+	"time"
 
 	"github.com/FusionAuth/go-client/pkg/fusionauth"
-
+	"github.com/sirupsen/logrus"
+	lrlog "github.com/cyp57/user-api/pkg/logrus"
 	resHandler "github.com/cyp57/user-api/app/api-helper"
+	"github.com/cyp57/user-api/cnst"
 	"github.com/cyp57/user-api/utils"
 )
-
 
 type (
 	Fusionauth struct {
@@ -27,7 +31,32 @@ type (
 
 var AuthClient *fusionauth.FusionAuthClient
 
-func (f *Fusionauth) InitConnection(client *fusionauth.FusionAuthClient) {
+func InitFusionAuth() {
+	var host = utils.GetYaml(cnst.FusionHost)
+	var apiKey = utils.GetYaml(cnst.FusionAPIKey)
+	var httpClient = &http.Client{
+		Timeout: time.Second * 30,
+	}
+
+	var baseURL, err = url.Parse(host)
+	if err != nil {
+		ls := &lrlog.LrlogObj{Data: nil, Txt: err.Error(), Level: logrus.FatalLevel}
+		ls.Print()
+	}
+	// Construct a new FusionAuth Client
+	Auth := fusionauth.NewClient(httpClient, baseURL, apiKey)
+
+	// for production code, don't ignore the error!
+	_, err = Auth.RetrieveTenants()
+	if err != nil {
+		ls := &lrlog.LrlogObj{Data: nil, Txt: err.Error(), Level: logrus.FatalLevel}
+		ls.Print()
+	}
+
+	fusionauthConnection(Auth)
+}
+
+func fusionauthConnection(client *fusionauth.FusionAuthClient) {
 	AuthClient = client
 }
 
@@ -41,16 +70,17 @@ func (f *Fusionauth) Login() (response *fusionauth.LoginResponse, err error) {
 	request.LoginId = f.LoginId
 	request.Password = f.Password
 
-	response, restErr, err := AuthClient.Login(request) //
+	response, restErr, err := AuthClient.Login(request)
+	utils.Debug("AuthClient.Login :")
 	utils.Debug(response)
 
 	if err != nil {
-		resHandler.SetErrorCode(4003)
+		resHandler.SetErrorCode(4000)
 		return nil, err
 	}
 
 	if restErr != nil {
-		resHandler.SetErrorCode(4004)
+		resHandler.SetErrorCode(4001)
 		return nil, restErr
 	}
 
@@ -69,37 +99,26 @@ func (f *Fusionauth) Register() (response *fusionauth.RegistrationResponse, err 
 	request.User.LastName = f.LastName
 	request.User.MobilePhone = f.MobilePhone
 	request.Registration.Roles = f.Roles
-	
-	fmt.Println("func : Register : ", request)
+
+
 	response, restErr, err := AuthClient.Register("", request)
+	utils.Debug("AuthClient.Register :")
 	utils.Debug(response)
-	fmt.Println("AuthClient.Register err : ", err)
-	fmt.Println("AuthClient.Register restErr : ", restErr)
+
 	if err != nil {
-		resHandler.SetErrorCode(4001)
+		resHandler.SetErrorCode(4002)
 		return nil, err
 	}
 
 	if restErr != nil {
-		resHandler.SetErrorCode(4002)
+		resHandler.SetErrorCode(4003)
 		return nil, restErr
 	}
 
 	return response, nil
 }
 
-
-
 func (f *Fusionauth) PatchUser(uuid string) (*fusionauth.UserResponse, error) {
-
-	// request := map[string]interface{}{
-	// 	"user": map[string]interface{}{
-	// 		"firstName":   f.FirstName,
-	// 		"lastName":    f.LastName,
-	// 		"email":       f.Email,
-	// 		"mobilePhone": f.MobilePhone,
-	// 	},
-	// }
 
 	request := make(map[string]interface{})
 	user := make(map[string]interface{})
@@ -118,39 +137,22 @@ func (f *Fusionauth) PatchUser(uuid string) (*fusionauth.UserResponse, error) {
 	request["user"] = user
 
 	response, restErr, err := AuthClient.PatchUser(uuid, request)
+	utils.Debug("AuthClient.PatchUser :")
 	utils.Debug(response)
 	if err != nil {
-		resHandler.SetErrorCode(4001)
+		resHandler.SetErrorCode(4004)
 		return nil, err
 	}
 
 	if restErr != nil {
-		resHandler.SetErrorCode(4002)
+		resHandler.SetErrorCode(4005)
 		return nil, restErr
 	}
-	
+
 	return response, nil
 }
 
 func (f *Fusionauth) PatchRegistration(uuid string) (*fusionauth.RegistrationResponse, error) {
-	// var request fusionauth.UserRequest
-
-	// request.User.Username = f.Username
-	// request.User.Email = f.Email
-	// request.User.FirstName = f.FirstName
-	// request.User.LastName = f.LastName
-	// request.User.MobilePhone = f.MobilePhone
-
-	// Example request to update user fields
-	// request := map[string]interface{}{
-	// 	"registration": map[string]interface{}{
-	// 		"applicationId" : "",
-	// 		"username": f.Username, // Update the first name
-	// 		"roles":  f.Roles,  // Update the last name
-	// 	},
-
-	// 	// Add more fields as needed
-	// }
 
 	request := make(map[string]interface{})
 	registration := make(map[string]interface{})
@@ -166,16 +168,15 @@ func (f *Fusionauth) PatchRegistration(uuid string) (*fusionauth.RegistrationRes
 	request["registration"] = registration
 
 	response, restErr, err := AuthClient.PatchRegistration(uuid, request)
-	// response,restErr,err:=AuthClient.UpdateUser(uuid,request)
-	fmt.Println("AuthClient.UpdateUser :")
+	utils.Debug("AuthClient.PatchRegistration :")
 	utils.Debug(response)
 	if err != nil {
-		resHandler.SetErrorCode(4005)
+		resHandler.SetErrorCode(4006)
 		return nil, err
 	}
 
 	if restErr != nil {
-		resHandler.SetErrorCode(4006)
+		resHandler.SetErrorCode(4007)
 		return nil, restErr
 	}
 
@@ -189,15 +190,16 @@ func (f *Fusionauth) ForgotPassword() (*fusionauth.ForgotPasswordResponse, error
 	request.SendForgotPasswordEmail = true
 
 	response, restErr, err := AuthClient.ForgotPassword(request)
-	fmt.Println("AuthClient.ForgotPassword :")
+	utils.Debug("AuthClient.ForgotPassword :")
 	utils.Debug(response)
+
 	if err != nil {
-		resHandler.SetErrorCode(4007)
+		resHandler.SetErrorCode(4008)
 		return nil, err
 	}
 
 	if restErr != nil {
-		resHandler.SetErrorCode(4008)
+		resHandler.SetErrorCode(4009)
 		return nil, restErr
 	}
 
@@ -208,68 +210,89 @@ func (f *Fusionauth) ChangePassword(currentPassword string, newPassword string) 
 	request.LoginId = f.LoginId
 	request.CurrentPassword = currentPassword
 	request.Password = newPassword
+	request.ApplicationId = f.ApplicationId
 
 	response, restErr, err := AuthClient.ChangePasswordByIdentity(request)
-	fmt.Println("AuthClient.ChangePassword :")
+	utils.Debug("AuthClient.ChangePasswordByIdentity :")
 	utils.Debug(response)
 	if err != nil {
-		resHandler.SetErrorCode(4009)
+		resHandler.SetErrorCode(4010)
 		return err
 	}
 
 	if restErr != nil {
-		resHandler.SetErrorCode(4010)
+		resHandler.SetErrorCode(4011)
 		return restErr
 	}
 
 	return nil
 }
 
-func (f *Fusionauth) ValidateToken(token string) (*fusionauth.ValidateResponse, error){
+func (f *Fusionauth) ValidateToken(token string) (*fusionauth.ValidateResponse, error) {
 
 	response, err := AuthClient.ValidateJWT(token)
-	fmt.Println("AuthClient.ValidateJWT :")
+	utils.Debug("AuthClient.ValidateJWT :")
 	utils.Debug(response)
 
 	if err != nil {
-		resHandler.SetErrorCode(4011)
-		return nil , err
+		resHandler.SetErrorCode(4012)
+		return nil, err
 	}
 
- return response , nil
+	return response, nil
 }
 
-func (f *Fusionauth) GetUserRegistration(uuid string) (*fusionauth.RegistrationResponse, error){
+func (f *Fusionauth) GetUserRegistration(uuid string) (*fusionauth.RegistrationResponse, error) {
 
-	if utils.IsEmptyString(f.ApplicationId ) {
-		return nil , fmt.Errorf("fusionauth applicationId not found")
+	if utils.IsEmptyString(f.ApplicationId) {
+		return nil, fmt.Errorf(cnst.ErrappIdNotFound)
 	}
 
-	response ,restErr,err:=AuthClient.RetrieveRegistration(uuid , f.ApplicationId)
+	response, restErr, err := AuthClient.RetrieveRegistration(uuid, f.ApplicationId)
+	utils.Debug("AuthClient.RetrieveRegistration :")
+	utils.Debug(response)
+
 	if err != nil {
-		resHandler.SetErrorCode(4009)
-		return nil , err
+		resHandler.SetErrorCode(4013)
+		return nil, err
 	}
 
 	if restErr != nil {
-		resHandler.SetErrorCode(4010)
-		return nil , restErr
+		resHandler.SetErrorCode(4014)
+		return nil, restErr
 	}
 
-	return response , nil
+	return response, nil
 }
 
-
-func (f *Fusionauth) DeleteUser(uuid string) (error){
-	_ ,restErr,err := AuthClient.DeleteUser(uuid)
+func (f *Fusionauth) DeleteUser(uuid string) error {
+	_, restErr, err := AuthClient.DeleteUser(uuid)
 	if err != nil {
-		resHandler.SetErrorCode(4009)
+		resHandler.SetErrorCode(4015)
 		return err
 	}
 	if restErr != nil {
-		resHandler.SetErrorCode(4010)
-		return restErr 
+		resHandler.SetErrorCode(4016)
+		return restErr
 	}
 
 	return nil
+}
+
+func (f *Fusionauth) NewAccessToken(token, refreshToken string) (*fusionauth.IssueResponse, error) {
+
+	response, restErr, err := AuthClient.IssueJWT(f.ApplicationId, token, refreshToken)
+	utils.Debug("AuthClient.IssueJWT :")
+	utils.Debug(response)
+
+	if err != nil {
+		resHandler.SetErrorCode(4017)
+		return nil, err
+	}
+	if restErr != nil {
+		resHandler.SetErrorCode(4018)
+		return nil, restErr
+	}
+
+	return response, nil
 }

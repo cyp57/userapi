@@ -3,34 +3,61 @@
 @port = 4570
 @host = {{hostname}}:{{port}}
 @contentType = application/json
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImVmYjg2M2VlYyJ9.eyJhdWQiOiI0MGJjYmUwOC0yY2Y4LTQ1ZTItYTU5Zi1jNGM2NjEzZjRkZWYiLCJleHAiOjE3MDc0ODEwMjgsImlhdCI6MTcwNzQ3MzgyOCwiaXNzIjoiYWNtZS5jb20iLCJzdWIiOiIwMzU5NzcxOS0zMzNkLTRlNDEtYjIyYS02NDMyYmUyZGYxMTUiLCJqdGkiOiJjNzYzNThjOS01ZjczLTQxMzItYTZmZC0yNzJkN2EzN2I2MmQiLCJhdXRoZW50aWNhdGlvblR5cGUiOiJQQVNTV09SRCIsImVtYWlsIjoiY2hhbnlhcGF0c2hlbGw5X3BhdGNoQGdtYWlsLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJjaGFueWFwYXQ5IiwiYXBwbGljYXRpb25JZCI6IjQwYmNiZTA4LTJjZjgtNDVlMi1hNTlmLWM0YzY2MTNmNGRlZiIsInJvbGVzIjpbImN1c3RvbWVyIl0sInNpZCI6IjcyMzQ0YmUyLWQzMzktNDhiNy1hZjhkLWI0ZDlhMzJiYWUzYiIsImF1dGhfdGltZSI6MTcwNzQ3MzgyOCwidGlkIjoiNWE3Mjc3ZmEtNjUzMC1iOTE3LWIzNTMtNGVjZGI5Yjg1ZmM5In0.otTKiaB3myXjYfTUVHCw4wIzfqmV2Oa_u6_mOnvdQcM
-
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImVmYjg2M2VlYyJ9.eyJhdWQiOiI0MGJjYmUwOC0yY2Y4LTQ1ZTItYTU5Zi1jNGM2NjEzZjRkZWYiLCJleHAiOjE3MDgwNjY1MjUsImlhdCI6MTcwODA1OTMyNSwiaXNzIjoiYWNtZS5jb20iLCJzdWIiOiJjNWRhMDcxMC0xYzFjLTRiNTAtYjllOC0xZjQ2NWI0ZWRkZTgiLCJqdGkiOiI4ODIzYTRiYi05NjdjLTQ3ZDUtYmZmZS1lODc2ZTEwYmRlOGIiLCJhdXRoZW50aWNhdGlvblR5cGUiOiJQQVNTV09SRCIsImVtYWlsIjoiY2hhbnlhcGF0c2hlbGxAaG90bWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiYXBwbGljYXRpb25JZCI6IjQwYmNiZTA4LTJjZjgtNDVlMi1hNTlmLWM0YzY2MTNmNGRlZiIsInJvbGVzIjpbImFkbWluIl0sInNpZCI6IjcyOGYwMzEyLWI2OTctNDUyZS1hZTNhLTBiYTY0OWNlM2M5YSIsImF1dGhfdGltZSI6MTcwODA1OTMyNSwidGlkIjoiNWE3Mjc3ZmEtNjUzMC1iOTE3LWIzNTMtNGVjZGI5Yjg1ZmM5In0.ab498fd70qVeN2UlGwti4wm4fwMsexEHowaa2RTgJVg
 ### login
 POST http://{{host}}/userapi/user/login HTTP/1.1
 content-type: {{contentType}}
 
+{
+    "userName": "chanyapatshell@hotmail.com",
+    "password": "0918208741"
+}
+
 # {
-#     "userName": "chanyapatshell@hotmail.com",
-#     "password": "0918208741asdasd"
+#     "userName": "chanyapatshell5@gmail.com",
+#     "password": "12345678"
 # }
 
+# {
+#     "userName": "chanyapatshell@gmail.com",
+#     "password": "12345678"
+# }
+
+
+### refresh token
+POST http://{{host}}/userapi/user/refresh/token HTTP/1.1
+content-type: {{contentType}}
+
 {
-    "userName": "chanyapatshell9_patch@gmail.com",
-    "password": "12345678"
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImVmYjg2M2VlYyJ9.eyJhdWQiOiI0MGJjYmUwOC0yY2Y4LTQ1ZTItYTU5Zi1jNGM2NjEzZjRkZWYiLCJleHAiOjE3MDc3Mzc1MTEsImlhdCI6MTcwNzczMDMxMSwiaXNzIjoiYWNtZS5jb20iLCJzdWIiOiJjNjllMDYyYy03YzMwLTRmZjQtYThiMy1iMDY3ZTc3MmI0NjYiLCJqdGkiOiJkYzM5NzhkZS05NjQ4LTQyNmEtYTE4OS00NmExNzkwZjgwZTkiLCJhdXRoZW50aWNhdGlvblR5cGUiOiJQQVNTV09SRCIsImVtYWlsIjoiY2hhbnlhcGF0c2hlbGxAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsInByZWZlcnJlZF91c2VybmFtZSI6Im1yczAwMSIsImFwcGxpY2F0aW9uSWQiOiI0MGJjYmUwOC0yY2Y4LTQ1ZTItYTU5Zi1jNGM2NjEzZjRkZWYiLCJyb2xlcyI6WyJjdXN0b21lciJdLCJzaWQiOiI3MjRlMTQ5ZC0xYTA1LTRjOWQtOTdmMC1kOGIzZDI0MjA5MTIiLCJhdXRoX3RpbWUiOjE3MDc3MzAzMTEsInRpZCI6IjVhNzI3N2ZhLTY1MzAtYjkxNy1iMzUzLTRlY2RiOWI4NWZjOSJ9.9qgX0lHCgr56cIpRkwV9eEJgRQvleR6U0yaJxj777vk",
+  "refreshToken": "OUJuzL3_VXwKnDNbB6QfDhVJbJjUBydSEqDzArEz3DWlcXcipCNeEw"
 }
 
 
+
+### signup admin
+POST http://{{host}}/userapi/user/admin/signup HTTP/1.1
+token: {{token}}
+content-type: {{contentType}}
+
+{
+    "userName": "mrs001",
+    "email" : "chanyapatshell@gmail.com",
+    "password": "12345678",
+    "firstName" : "chanyapat",
+	"lastName" : "rattamakot"
+}
 
 ### signup
 POST http://{{host}}/userapi/user/signup HTTP/1.1
 content-type: {{contentType}}
 
 {
-    "userName": "aka01",
-    "email" : "aka01@gmail.com",
+    "userName": "shell01",
+    "email" : "chanyapat1@gmail.com",
     "password": "12345678",
-    "firstName" : "aka",
-	"lastName" : "double"
+    "firstName" : "chanyapat1",
+	"lastName" : "rattanakot1"
 }
 
 ### edit
@@ -75,6 +102,21 @@ token: {{token}}
 content-type: {{contentType}}
 
 ### delete
-DELETE  http://{{host}}/userapi/user/8dc68545-27f7-4084-a1e5-f4a35d2ff0a5 HTTP/1.1
+DELETE  http://{{host}}/userapi/user/5dae0daf-fc2b-43c9-bf8e-56d7d2824852 HTTP/1.1
 token: {{token}}
 content-type: {{contentType}}
+
+### forgot/pass
+POST  http://{{host}}/userapi/user/forgot/password HTTP/1.1
+token:
+content-type: {{contentType}}
+
+{"email" : "chanyapatshell@gmail.com"}
+
+### change/pass
+PUT  http://{{host}}/userapi/user/change/password/c69e062c-7c30-4ff4-a8b3-b067e772b466 HTTP/1.1
+token: {{token}}
+content-type: {{contentType}}
+
+{"password" : "12341234",
+"newPassword" : "12345678"}

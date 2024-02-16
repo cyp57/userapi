@@ -2,7 +2,6 @@ package mongodb
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/cyp57/user-api/utils"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -18,7 +17,7 @@ func InsertOneDocument(collectionName string, data primitive.M, prefixId string)
 	}
 
 	data["id"] = infoId
-	fmt.Println("Database  = =", Database)
+
 	_, err := Database.Collection(collectionName).InsertOne(context.TODO(), data)
 	if err != nil {
 		return "", err

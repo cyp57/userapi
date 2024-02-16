@@ -36,5 +36,7 @@ type ForgotPasswordInfo struct {
 }
 
 type ChangePasswordInfo struct {
-	
+	// Email string `json:"email"`
+	Password string `json:"password"`
+	NewPassword string `json:"newPassword"`
 }

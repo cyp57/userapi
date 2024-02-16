@@ -12,6 +12,7 @@ import (
 
 type IUser interface {
 	CreateUser(*gin.Context)
+	CreateAdmin(*gin.Context)
 	EditUser(*gin.Context)
 	PatchUser(*gin.Context)
 	GetUser(*gin.Context)
@@ -22,6 +23,26 @@ type IUser interface {
 }
 
 type UserApi struct{}
+
+func (u *UserApi) CreateAdmin(c *gin.Context) {
+	var jsonbody model.RegistrationInfo
+
+	if err := c.ShouldBindJSON(&jsonbody); err != nil {
+		resp.ErrResponse(c, http.StatusBadRequest, err.Error())
+		return
+	} else {
+		fusionAppId := utils.GetYaml("FusionAppId")
+		result, err := userCtrlV1.CreateUser(&jsonbody, fusionAppId,true)
+		if err != nil {
+			resp.ErrResponse(c, http.StatusBadRequest, err.Error())
+			return
+		} else {
+			resp.SuccessResponse(c, http.StatusOK, result, cnst.SignupOk)
+			return
+		}
+	}
+
+}
 
 func (u *UserApi) CreateUser(c *gin.Context) {
 	var jsonbody model.RegistrationInfo
@@ -111,7 +132,6 @@ func (u *UserApi) GetUser(c *gin.Context) {
 	}
 }
 
-
 func (u *UserApi) DeleteUser(c *gin.Context) {
 	uuid := c.Param("uuid")
 
@@ -120,16 +140,15 @@ func (u *UserApi) DeleteUser(c *gin.Context) {
 		if err != nil {
 			resp.ErrResponse(c, http.StatusBadRequest, err.Error())
 		} else {
-			resp.SuccessResponse(c, http.StatusOK, &result,cnst.DeleteSuccess)
+			resp.SuccessResponse(c, http.StatusOK, &result, cnst.DeleteSuccess)
 		}
 	} else {
 		resp.ErrResponse(c, http.StatusBadRequest, cnst.ErrReqPathParamUuid)
 	}
 }
 
-
-func (u *UserApi) ForgotPassword(c *gin.Context){
-	var jsonbody model.RegistrationInfo
+func (u *UserApi) ForgotPassword(c *gin.Context) {
+	var jsonbody model.ForgotPasswordInfo
 
 	if err := c.ShouldBindJSON(&jsonbody); err != nil {
 
@@ -137,15 +156,41 @@ func (u *UserApi) ForgotPassword(c *gin.Context){
 		return
 	} else {
 		fusionAppId := utils.GetYaml("FusionAppId")
-		result, err := userCtrlV1.CreateUser(&jsonbody, fusionAppId)
+		result, err := userCtrlV1.ForgotPassword(&jsonbody, fusionAppId)
 		if err != nil {
 			resp.ErrResponse(c, http.StatusBadRequest, err.Error())
 			return
 		} else {
-			resp.SuccessResponse(c, http.StatusOK, result, cnst.SignupOk)
+			resp.SuccessResponse(c, http.StatusOK, result, cnst.ForgotPasswordSuccess)
 			return
 		}
 	}
 
 }
-func (u *UserApi) ChangePassword(c *gin.Context){}
+func (u *UserApi) ChangePassword(c *gin.Context) {
+	var jsonbody model.ChangePasswordInfo
+
+	tokenUuid := c.GetString("userId")
+	uuid := c.Param("uuid")
+	if uuid != tokenUuid {
+		resp.ErrResponse(c, http.StatusBadRequest, cnst.ErrValidUuid)
+		return
+	}
+
+	if err := c.ShouldBindJSON(&jsonbody); err != nil {
+		resp.ErrResponse(c, http.StatusBadRequest, err.Error())
+		return
+	} else {
+
+		fusionAppId := utils.GetYaml("FusionAppId")
+		result, err := userCtrlV1.ChangePassword(uuid, &jsonbody, fusionAppId)
+		if err != nil {
+			resp.ErrResponse(c, http.StatusBadRequest, err.Error())
+			return
+		} else {
+			resp.SuccessResponse(c, http.StatusOK, result, cnst.ChangePasswordSuccess)
+			return
+		}
+	}
+
+}

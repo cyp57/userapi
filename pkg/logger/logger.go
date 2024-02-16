@@ -11,8 +11,10 @@ import (
 	"strings"
 	"time"
 
+	lrlog "github.com/cyp57/user-api/pkg/logrus"
 	"github.com/cyp57/user-api/utils"
 	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
 )
 
 type ResponseWriter struct {
@@ -70,8 +72,8 @@ func (l *LoggerObj) SetBody(c *gin.Context) {
 		// Read the request body
 		body, err := io.ReadAll(c.Request.Body)
 		if err != nil {
-			log.Println("Error reading request body:", err)
-			c.JSON(500, gin.H{"error": "Internal Server Error"})
+			ls := &lrlog.LrlogObj{Data: nil, Txt: err.Error(), Level: logrus.ErrorLevel}
+			ls.Print()
 			return
 		}
 		// Log the request body
@@ -82,7 +84,8 @@ func (l *LoggerObj) SetBody(c *gin.Context) {
 		// Unmarshal the byte slice into the empty interface
 		err = json.Unmarshal(body, &result)
 		if err != nil {
-			fmt.Println("Error:", err)
+			ls := &lrlog.LrlogObj{Data: nil, Txt: err.Error(), Level: logrus.ErrorLevel}
+			ls.Print()
 			return
 		}
 
@@ -94,12 +97,12 @@ func (l *LoggerObj) SetBody(c *gin.Context) {
 func (l *LoggerObj) SetResponse(c *gin.Context, rw *ResponseWriter) {
 
 	// Store the response writer to intercept the response
-	resMap := make(map[string]interface{})
-	// var resMap interface{}
+
+	var resMap interface{}
 	err := json.Unmarshal(rw.Body.Bytes(), &resMap)
 	if err != nil {
-		// panic(err)
-		fmt.Println("Error:", err)
+		ls := &lrlog.LrlogObj{Data: nil, Txt: err.Error(), Level: logrus.ErrorLevel}
+		ls.Print()
 		return
 	}
 

@@ -16,3 +16,10 @@ type LoginResponse struct {
 	Roles []string  `json:"roles"`
 	
 }
+
+type RefreshJwt struct {
+ 
+	Token string `json:"token"`
+	RefreshToken string `json:"refreshToken"`
+	
+}
