@@ -7,10 +7,10 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-// InsertDocument inserts a document into the specified MongoDB collection
+
 func InsertOneDocument(collectionName string, data primitive.M, prefixId string) (string, error) {
 	infoId := ""
-	if !utils.IsEmptyString(prefixId) {
+	if !utils.IsEmptyString(prefixId) { // custom generate field id 
 		infoId = utils.GenerateOid(prefixId)
 	} else { // default
 		infoId = utils.GenerateOid("SH")

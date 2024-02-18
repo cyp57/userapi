@@ -16,12 +16,10 @@ import (
 
 var Database *mongo.Database
 
-// DBConnection ..
 func dbConnection(c *mongo.Database) {
 	Database = c
 }
 
-// Connect is for get mongo driver connection
 func MongoDbConnect() {
 
 	dbHost := utils.GetYaml(cnst.DBHost)
@@ -62,9 +60,7 @@ func MongoDbConnect() {
 		ls.Print()
 
 	}
-	// defer client.Disconnect(ctx)
 
-	// //Connect to the database
 	db := client.Database(dbName)
 	dbConnection(db)
 

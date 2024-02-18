@@ -12,8 +12,6 @@ import (
 func DeleteOneDocument(col string, query primitive.M) (bool, error) {
 
 	result, err := Database.Collection(col).DeleteOne(context.TODO(), query)
-	// fmt.Println("DeleteOneDocument result :", result)
-	// fmt.Println("DeleteOneDocument err :", err)
 	if err != nil {
 		return false, err
 	}

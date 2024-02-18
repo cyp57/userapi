@@ -22,8 +22,6 @@ func getEnvVariableBool(key string) bool {
 	result := os.Getenv(key)
 	boolValue, err := strconv.ParseBool(result)
 	if err != nil {
-		//log.Fatal(err)
-		// logging.Logger(cnst.Fatal, err, logrusField)
 		return false
 	}
 	return boolValue

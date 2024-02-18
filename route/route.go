@@ -11,7 +11,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// InitRoute ..
+
 func InitRoute() *gin.Engine {
 
 	router := gin.Default()
@@ -40,14 +40,14 @@ func setRoute(router *gin.Engine) {
 	router.GET(serviceName, root)
 	v1 := router.Group(serviceName)
 	v1.Use(middleHandler.InterceptLog())
-	{
+	{ // non require token group
 		nonAuthGroup := v1.Group(path.Join("user"))
 		nonAuthGroup.POST("/login", api.Login)
 		nonAuthGroup.POST("/refresh/token", api.Refresh)
 		nonAuthGroup.POST("/signup", api.CreateUser)
 		nonAuthGroup.POST("/forgot/password",api.ForgotPassword)
 	}
-	{
+	{ // require token group
 		reqAuthGroup := v1.Group(path.Join("user"))
 		reqAuthGroup.Use(middleHandler.ValidateToken)
 		reqAuthGroup.POST("/admin/signup",middleHandler.AuthorizeRole("admin") ,api.CreateAdmin)  /// admin
@@ -59,7 +59,6 @@ func setRoute(router *gin.Engine) {
 
 		reqAuthGroup.PUT("/change/password/:uuid",middleHandler.AuthorizeRole("admin","customer") , api.ChangePassword) //// customer ,admin
 
-		
 	}
 
 }

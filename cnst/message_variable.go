@@ -1,6 +1,6 @@
 package cnst
 
-// contain key in env file
+// contain message
 
 const (
 	SignupOk      = "Sign up success."

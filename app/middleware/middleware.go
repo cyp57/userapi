@@ -45,8 +45,8 @@ func (m *MiddlewareHandler) InterceptLog() gin.HandlerFunc {
 		c.Next()
 
 		log.SetResponse(c, rw)
-		// log.Print()
-		log.Print().Save()
+		// log.Print() on print log
+		log.Print().Save() //  print and save log to \assets\log
 	}
 }
 

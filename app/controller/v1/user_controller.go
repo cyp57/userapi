@@ -17,7 +17,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-type IUserCtrl interface{
+type IUserCtrl interface {
 	CreateUser(data *model.RegistrationInfo, appId string, isAdmin ...bool) (interface{}, error)
 	EditUser(uuid string, data *model.UserInfo) (interface{}, error)
 	PatchUser(uuid string, data map[string]interface{}) (interface{}, error)
@@ -27,7 +27,7 @@ type IUserCtrl interface{
 
 	DeleteUser(uuid string) (interface{}, error)
 	ForgotPassword(data *model.ForgotPasswordInfo, appId string) (interface{}, error)
-	ChangePassword(uuid string ,data *model.ChangePasswordInfo, appId string) (interface{}, error)
+	ChangePassword(uuid string, data *model.ChangePasswordInfo, appId string) (interface{}, error)
 }
 
 type UserCtrl struct{}
@@ -56,11 +56,10 @@ func (u *UserCtrl) CreateUser(data *model.RegistrationInfo, appId string, isAdmi
 		return nil, err
 	}
 
-
 	data.Uuid = resp.User.Id
 	hashed, err := utils.HashPassword(data.Password)
 	if err != nil {
-	
+
 		return nil, err
 	}
 	data.Password = hashed
@@ -73,7 +72,7 @@ func (u *UserCtrl) CreateUser(data *model.RegistrationInfo, appId string, isAdmi
 
 	m, err := utils.StructToM(data)
 	if err != nil {
-		
+
 		return nil, err
 	}
 	collectionName := setting.CollectionSetting.User
@@ -92,35 +91,56 @@ func (u *UserCtrl) CreateUser(data *model.RegistrationInfo, appId string, isAdmi
 
 // edit all value
 func (u *UserCtrl) EditUser(uuid string, data *model.UserInfo) (interface{}, error) {
+	errCh := make(chan error, 2)
+	var wg sync.WaitGroup
 
-	var fusionObj fusionauth.Fusionauth
-	fusionObj.Email = data.Email
-	fusionObj.FirstName = data.FirstName
-	fusionObj.LastName = data.LastName
-	fusionObj.MobilePhone = data.MobilePhone
+	wg.Add(2)
 
-	_, err := fusionObj.PatchUser(uuid)
-	if err != nil {
-		return nil, err
-	}
+	go func() {
+		defer wg.Done()
+		var fusionObj fusionauth.Fusionauth
+		fusionObj.Email = data.Email
+		fusionObj.FirstName = data.FirstName
+		fusionObj.LastName = data.LastName
+		fusionObj.MobilePhone = data.MobilePhone
 
-	now, err := utils.GetCurrentTime()
-	if err != nil {
-		return nil, err
-	}
-	data.UpdatedAt = now
-	m, err := utils.StructToM(data)
-	if err != nil {
-		return nil, err
-	}
-	utils.Debug(m)
+		_, err := fusionObj.PatchUser(uuid)
+		if err != nil {
+			errCh <- err
+			return
+		}
+	}()
 
-	collectionName := setting.CollectionSetting.User
-	filter := bson.M{"uuid": uuid}
-	update := bson.M{"$set": m}
-	_, err = mongodb.UpdateDocument(collectionName, filter, update, nil)
-	if err != nil {
-		return nil, err
+	go func() {
+		defer wg.Done()
+		now, err := utils.GetCurrentTime()
+		if err != nil {
+			errCh <- err
+			return
+		}
+		data.UpdatedAt = now
+		m, err := utils.StructToM(data)
+		if err != nil {
+			errCh <- err
+			return
+		}
+		utils.Debug(m)
+
+		collectionName := setting.CollectionSetting.User
+		filter := bson.M{"uuid": uuid}
+		update := bson.M{"$set": m}
+		_, err = mongodb.UpdateDocument(collectionName, filter, update, nil)
+		if err != nil {
+			errCh <- err
+			return
+		}
+	}()
+	wg.Wait()
+	close(errCh)
+	for err := range errCh {
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	return uuid, nil
@@ -386,18 +406,18 @@ func (u *UserCtrl) ForgotPassword(data *model.ForgotPasswordInfo, appId string) 
 	return data.Email, nil
 }
 
-func (u *UserCtrl) ChangePassword(uuid string ,data *model.ChangePasswordInfo, appId string) (interface{}, error) {
+func (u *UserCtrl) ChangePassword(uuid string, data *model.ChangePasswordInfo, appId string) (interface{}, error) {
 	reqMap := make(map[string]interface{})
 	reqMap["require"] = "[\"email\"]"
-	userData , err:= u.GetUserInfo(uuid,reqMap)
+	userData, err := u.GetUserInfo(uuid, reqMap)
 	if err != nil {
 		return nil, err
 	}
-	
+
 	var fusionObj fusionauth.Fusionauth
 	fusionObj.SetApplicationId(appId)
 	fusionObj.LoginId = userData.Email
-	
+
 	err = fusionObj.ChangePassword(data.Password, data.NewPassword)
 	if err != nil {
 		return nil, err

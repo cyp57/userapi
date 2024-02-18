@@ -29,7 +29,6 @@ type (
 	}
 )
 
-// var resp = &ResponseHandler{}
 var ErrCode = 0
 
 func SetErrorCode(errCode int) {

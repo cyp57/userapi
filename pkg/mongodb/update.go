@@ -20,14 +20,16 @@ func UpdateDocument(collectionName string, filter primitive.M, update primitive.
 
 	arrayfilterOpts := options.ArrayFilters{
 		Filters: arrayfilter,
-	}
+	} 
 
-	opts := &options.FindOneAndUpdateOptions{}
-	// opts := options.FindOneAndUpdateOptions{
+	// opts := options.FindOneAndUpdateOptions{ 
 	// 	Upsert:         &upsert,
 	// 	ArrayFilters:   &arrayfilterOpts,
 	// 	ReturnDocument: &after,
 	// }
+
+	opts := &options.FindOneAndUpdateOptions{}
+
 	opts.SetUpsert(true)
 	if arrayfilter != nil {
 		opts.SetArrayFilters(arrayfilterOpts)

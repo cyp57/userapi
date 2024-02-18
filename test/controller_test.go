@@ -44,6 +44,10 @@ func initTestEnvironment() {
 }
 
 func Test_CreateUser(t *testing.T) {
+	//create <<
+	//get for check
+	//delete
+
 	initTestEnvironment()
 	type userData struct {
 		userName string
@@ -52,8 +56,8 @@ func Test_CreateUser(t *testing.T) {
 	}
 
 	type testCreateUser struct {
-		data   userData
-		isErr  bool
+		data  userData
+		isErr bool
 	}
 
 	tests := []testCreateUser{
@@ -75,7 +79,7 @@ func Test_CreateUser(t *testing.T) {
 		},
 	}
 
-	var resultUuid = make([]string, 0)
+	var uuids = make([]string, 0)
 
 	fusionAppId := utils.GetYaml(cnst.FusionAppId)
 	for _, test := range tests {
@@ -97,13 +101,14 @@ func Test_CreateUser(t *testing.T) {
 		}
 
 		if result != nil {
-			resultUuid = append(resultUuid, fmt.Sprint(result.(primitive.M)["uuid"]))
+			uuids = append(uuids, fmt.Sprint(result.(primitive.M)["uuid"]))
 		}
 	}
-	for _, uuid := range resultUuid {
+	for _, uuid := range uuids {
 		_, err := ctrlV1.GetUserInfo(uuid, nil)
 		if err != nil {
 			t.Errorf("CreateUser failed. Expected user data with uuid : %v, but got error :%v", uuid, err.Error())
+			return
 		} else { // delete user
 			_, err := ctrlV1.DeleteUser(uuid)
 			if err != nil {
@@ -114,15 +119,102 @@ func Test_CreateUser(t *testing.T) {
 
 }
 
+func Test_UpdateUserInfo(t *testing.T) {
+	// create 
+	// update <<
+	// get for check
+	initTestEnvironment()
+	fusionAppId := utils.GetYaml(cnst.FusionAppId)
+	user := &model.RegistrationInfo{
+		Username: "user3",
+		Email:    "user3@example.com",
+		Password: "12345678",
+	}
+	result, err := ctrlV1.CreateUser(user, fusionAppId)
+	if err != nil {
+		t.Errorf("Expected no error, but got: %v while CreateUser before update ", err.Error())
+		return
+	}
+
+	uuid := ""
+	if result != nil {
+		uuid = fmt.Sprint(result.(primitive.M)["uuid"])
+	}
+
+	update := &model.UserInfo{
+		FirstName: "user3",
+		Age:       30,
+		Email:     "user3@example.com",
+	}
+
+	_, err = ctrlV1.EditUser(uuid, update)
+	if err != nil {
+		t.Errorf("Expected no error, but got: %v while EditUser ", err.Error())
+		return
+	}
+
+	userData, err := ctrlV1.GetUserInfo(uuid)
+	if err != nil {
+		t.Errorf("Expected no error, but got: %v while GetUserInfo for check update's data ", err.Error())
+		return
+	}
+
+	if update.FirstName != userData.FirstName && update.Age != userData.Age && update.Email != userData.Email {
+		t.Errorf("Expected user update to %v, but got: %v  ", update, userData)
+	} else {
+		_, err = ctrlV1.DeleteUser(uuid)
+		if err != nil {
+			t.Errorf("DeleteUser failed. Expected delete user after create with uuid : %v, but got error :%v", uuid, err.Error())
+			return
+		}
+	}
+	
+}
+
+func Test_DeleteUser(t *testing.T) {
+	// create
+	// delete <<
+	//get for check
+	initTestEnvironment()
+	fusionAppId := utils.GetYaml(cnst.FusionAppId)
+	user := &model.RegistrationInfo{
+		Username: "user5",
+		Email:    "user5@example.com",
+		Password: "12345678",
+	}
+	result, err := ctrlV1.CreateUser(user, fusionAppId)
+	if err != nil {
+		t.Errorf("Expected no error, but got: %v while CreateUser before update ", err.Error())
+		return
+	}
+
+	uuid := ""
+	if result != nil {
+		uuid = fmt.Sprint(result.(primitive.M)["uuid"])
+	}
+
+	_, err = ctrlV1.DeleteUser(uuid)
+	if err != nil {
+		t.Errorf("DeleteUser failed. Expected delete user after create with uuid : %v, but got error :%v", uuid, err.Error())
+		return
+	}
+
+	_, err = ctrlV1.GetUserInfo(uuid, nil)
+	if err == nil {
+		t.Errorf("Expected an error, but got no error after get data that has been delete")
+		return
+	}
+
+}
+
 func Test_GetUserInfo(t *testing.T) {
+	initTestEnvironment()
 
 	type testGetUserInfo struct {
 		id     string
 		isErr  bool
 		expect interface{}
 	}
-
-	initTestEnvironment()
 
 	tests := []testGetUserInfo{
 		{

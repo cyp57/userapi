@@ -3,14 +3,14 @@
 @port = 4570
 @host = {{hostname}}:{{port}}
 @contentType = application/json
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImVmYjg2M2VlYyJ9.eyJhdWQiOiI0MGJjYmUwOC0yY2Y4LTQ1ZTItYTU5Zi1jNGM2NjEzZjRkZWYiLCJleHAiOjE3MDgwNjY1MjUsImlhdCI6MTcwODA1OTMyNSwiaXNzIjoiYWNtZS5jb20iLCJzdWIiOiJjNWRhMDcxMC0xYzFjLTRiNTAtYjllOC0xZjQ2NWI0ZWRkZTgiLCJqdGkiOiI4ODIzYTRiYi05NjdjLTQ3ZDUtYmZmZS1lODc2ZTEwYmRlOGIiLCJhdXRoZW50aWNhdGlvblR5cGUiOiJQQVNTV09SRCIsImVtYWlsIjoiY2hhbnlhcGF0c2hlbGxAaG90bWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiYXBwbGljYXRpb25JZCI6IjQwYmNiZTA4LTJjZjgtNDVlMi1hNTlmLWM0YzY2MTNmNGRlZiIsInJvbGVzIjpbImFkbWluIl0sInNpZCI6IjcyOGYwMzEyLWI2OTctNDUyZS1hZTNhLTBiYTY0OWNlM2M5YSIsImF1dGhfdGltZSI6MTcwODA1OTMyNSwidGlkIjoiNWE3Mjc3ZmEtNjUzMC1iOTE3LWIzNTMtNGVjZGI5Yjg1ZmM5In0.ab498fd70qVeN2UlGwti4wm4fwMsexEHowaa2RTgJVg
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImVmYjg2M2VlYyJ9.eyJhdWQiOiI0MGJjYmUwOC0yY2Y4LTQ1ZTItYTU5Zi1jNGM2NjEzZjRkZWYiLCJleHAiOjE3MDgxNTM0MTcsImlhdCI6MTcwODE0NjIxNywiaXNzIjoiYWNtZS5jb20iLCJzdWIiOiI4MmQyZWZkMC0zNWEwLTRmYzItOGRlMy1lZDViNzU5YmJiMmQiLCJqdGkiOiJmMWVmZjM1Ny0wMzRlLTRhOTMtOWI3Yy1lMTMxM2Y3MGM2ZTMiLCJhdXRoZW50aWNhdGlvblR5cGUiOiJQQVNTV09SRCIsImVtYWlsIjoiY2hhbnlhcGF0X2FkbWluQGdtYWlsLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJhZG1pbl9tcnMxIiwiYXBwbGljYXRpb25JZCI6IjQwYmNiZTA4LTJjZjgtNDVlMi1hNTlmLWM0YzY2MTNmNGRlZiIsInJvbGVzIjpbImFkbWluIl0sInNpZCI6IjY5YzA0ZWE3LTg2YzQtNDE0OC1hOGI1LTVhZWU4MzBjOGEyZCIsImF1dGhfdGltZSI6MTcwODE0NjIxNywidGlkIjoiNWE3Mjc3ZmEtNjUzMC1iOTE3LWIzNTMtNGVjZGI5Yjg1ZmM5In0.cdU_B4ixQz0NfscQ0QyeMU4ZNjTRZimil_a95mR26yI
 ### login
 POST http://{{host}}/userapi/user/login HTTP/1.1
 content-type: {{contentType}}
 
 {
-    "userName": "chanyapatshell@hotmail.com",
-    "password": "0918208741"
+    "userName": "chanyapat_admin@gmail.com",
+    "password": "12345678"
 }
 
 # {
@@ -41,8 +41,8 @@ token: {{token}}
 content-type: {{contentType}}
 
 {
-    "userName": "mrs001",
-    "email" : "chanyapatshell@gmail.com",
+    "userName": "admin_mrs1",
+    "email" : "chanyapat_admin@gmail.com",
     "password": "12345678",
     "firstName" : "chanyapat",
 	"lastName" : "rattamakot"
@@ -102,7 +102,7 @@ token: {{token}}
 content-type: {{contentType}}
 
 ### delete
-DELETE  http://{{host}}/userapi/user/5dae0daf-fc2b-43c9-bf8e-56d7d2824852 HTTP/1.1
+DELETE  http://{{host}}/userapi/user/392b2529-5e34-42e3-9b8d-77f185e88b39 HTTP/1.1
 token: {{token}}
 content-type: {{contentType}}
 

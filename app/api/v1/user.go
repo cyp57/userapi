@@ -31,7 +31,7 @@ func (u *UserApi) CreateAdmin(c *gin.Context) {
 		resp.ErrResponse(c, http.StatusBadRequest, err.Error())
 		return
 	} else {
-		fusionAppId := utils.GetYaml("FusionAppId")
+		fusionAppId := utils.GetYaml(cnst.FusionAppId)
 		result, err := userCtrlV1.CreateUser(&jsonbody, fusionAppId,true)
 		if err != nil {
 			resp.ErrResponse(c, http.StatusBadRequest, err.Error())
@@ -52,7 +52,7 @@ func (u *UserApi) CreateUser(c *gin.Context) {
 		resp.ErrResponse(c, http.StatusBadRequest, err.Error())
 		return
 	} else {
-		fusionAppId := utils.GetYaml("FusionAppId")
+		fusionAppId := utils.GetYaml(cnst.FusionAppId)
 		result, err := userCtrlV1.CreateUser(&jsonbody, fusionAppId)
 		if err != nil {
 			resp.ErrResponse(c, http.StatusBadRequest, err.Error())
@@ -155,7 +155,7 @@ func (u *UserApi) ForgotPassword(c *gin.Context) {
 		resp.ErrResponse(c, http.StatusBadRequest, err.Error())
 		return
 	} else {
-		fusionAppId := utils.GetYaml("FusionAppId")
+		fusionAppId := utils.GetYaml(cnst.FusionAppId)
 		result, err := userCtrlV1.ForgotPassword(&jsonbody, fusionAppId)
 		if err != nil {
 			resp.ErrResponse(c, http.StatusBadRequest, err.Error())
@@ -182,7 +182,7 @@ func (u *UserApi) ChangePassword(c *gin.Context) {
 		return
 	} else {
 
-		fusionAppId := utils.GetYaml("FusionAppId")
+		fusionAppId := utils.GetYaml(cnst.FusionAppId)
 		result, err := userCtrlV1.ChangePassword(uuid, &jsonbody, fusionAppId)
 		if err != nil {
 			resp.ErrResponse(c, http.StatusBadRequest, err.Error())

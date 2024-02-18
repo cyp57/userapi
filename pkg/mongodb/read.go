@@ -15,14 +15,12 @@ func FindOneDocument(col string, filter primitive.M, projection primitive.M) (re
 	var opts *options.FindOneOptions
 	if projection != nil {
 		opts = options.FindOne().SetProjection(projection)
-	} else {
+	} else { // default _id : will return all field without _id
 		opts = options.FindOne().SetProjection(bson.M{"_id": 0})
 	}
 	
 	err = Database.Collection(col).FindOne(context.TODO(), filter,opts).Decode(&result)
 
-	// Prints a message if no documents are matched or if any
-	// other errors occur during the operation
 	if err != nil {
 		if err == mongo.ErrNoDocuments {
 			return nil, err
@@ -38,13 +36,11 @@ func AggregateDocument(col string, pipeline []primitive.M) (result []primitive.M
 
 	cursor, err := Database.Collection(col).Aggregate(context.TODO(), pipeline)
 	if err != nil {
-
 		log.Println(err.Error())
 		return nil, err
 	}
 
 	if err = cursor.All(context.TODO(), &result); err != nil {
-
 		log.Println(err.Error())
 		return nil, err
 	}
@@ -54,8 +50,7 @@ func AggregateDocument(col string, pipeline []primitive.M) (result []primitive.M
 	return result, nil
 }
 
-// limit = input limit
-// skip = limit * (input offset - 1)
+
 func FindDocument(col string, filter primitive.M, projection, sort primitive.M, skip int64, limit int64) (result []primitive.M, err error) {
 
 	opts := options.Find()

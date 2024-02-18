@@ -7,39 +7,26 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-type ApiSetting struct{}
-
 type ApiGroup struct {
-	AuthenGroup       string
-	LoggingGroup      string
-	LogDataGroup      string
-	ImageServiceGroup string
+	UploadApiV1 string
 }
 
 var ApiGroupSetting = &ApiGroup{}
 
 type ApiEndpoint struct {
-	AuthenService       string
-	LoggingService      string
-	LogDataService      string
-	ImageUrl            string
-	ImageUpload         string
-	ImageDeleteEndPoint string
+	LogEndpoint    string
+	UploadEndpoint string
 }
 
 var ApiEndpointSetting = &ApiEndpoint{}
 
 type Collection struct {
-	LogService      string
-	TemplateService string
 	User string
 }
 
 var CollectionSetting = &Collection{}
 
 var cfg *ini.File
-
-
 
 // Setup initialize the configuration instance
 func InitIni(iniPath string) {

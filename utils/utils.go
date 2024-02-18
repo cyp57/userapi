@@ -26,7 +26,7 @@ func Output(data interface{}) []byte {
 	return bytes
 }
 
-func containInSlice(slice []string, val string) bool {
+func ContainInSlice(slice []string, val string) bool {
 	for _, item := range slice {
 		if item == val {
 			return true
@@ -46,22 +46,22 @@ func IsEmptyString(s string) bool {
 }
 
 func GetCurrentTime() (time.Time, error) {
-	// Get the current time
+
 	currentTime := time.Now()
 
 	// thaizone, err := time.LoadLocation("Asia/Bangkok")
 	// if err != nil {
 	// 	return time.Time{}, err
 	// }
-	timeString := currentTime.Local().Format(time.RFC3339)
 	// timeString := currentTime.In(thaizone).Format(time.RFC3339)
 
+	timeString := currentTime.Local().Format(time.RFC3339)
+	
 	parsedTime, err := time.Parse(time.RFC3339, timeString)
 	if err != nil {
 		return time.Time{}, err
 	}
 
-	// Return the parsed time
 	return parsedTime, nil
 }
 

@@ -67,7 +67,7 @@ func (l *LoggerObj) SetQuery(c *gin.Context) {
 
 }
 func (l *LoggerObj) SetBody(c *gin.Context) {
-	// var body interface{}
+
 	if c.Request.Method == http.MethodPost || c.Request.Method == http.MethodPut {
 		// Read the request body
 		body, err := io.ReadAll(c.Request.Body)
