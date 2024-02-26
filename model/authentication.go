@@ -16,3 +16,7 @@ type RefreshJwt struct {
 	Token        string `json:"token"`
 	RefreshToken string `json:"refreshToken"`
 }
+
+type LogOutInfo struct {
+	RefreshToken string `json:"refreshToken"`
+}

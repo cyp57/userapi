@@ -1,12 +1,11 @@
 package config
 
 import (
-	
 	"log"
 
-	"github.com/cyp57/user-api/cnst"
-	lrlog "github.com/cyp57/user-api/pkg/logrus"
-	"github.com/cyp57/user-api/utils"
+	"github.com/cyp57/userapi/cnst"
+	lrlog "github.com/cyp57/userapi/pkg/logrus"
+	"github.com/cyp57/userapi/utils"
 	"github.com/joho/godotenv"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"

@@ -3,12 +3,6 @@ HTTPPort : 4570
 ServiceName : userapi
 HttpRequestLimit : 10
 
-# #config database dev
-# DBType : mongodb
-# DBUser : chanyapatshell
-# DBPassword : uGjd1oeidcmAdTts
-# DBHost : mongodb+srv://chanyapatshell@cluster0.dm7mmvl.mongodb.net
-# DBName : Data
 
 #config database dev local
 DBType : mongodb

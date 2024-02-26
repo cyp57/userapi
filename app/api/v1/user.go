@@ -1,12 +1,11 @@
 package v1
 
 import (
-	
 	"net/http"
 
-	"github.com/cyp57/user-api/cnst"
-	"github.com/cyp57/user-api/model"
-	"github.com/cyp57/user-api/utils"
+	"github.com/cyp57/userapi/cnst"
+	"github.com/cyp57/userapi/model"
+	"github.com/cyp57/userapi/utils"
 	"github.com/gin-gonic/gin"
 )
 
@@ -32,7 +31,7 @@ func (u *UserApi) CreateAdmin(c *gin.Context) {
 		return
 	} else {
 		fusionAppId := utils.GetYaml(cnst.FusionAppId)
-		result, err := userCtrlV1.CreateUser(&jsonbody, fusionAppId,true)
+		result, err := userCtrlV1.CreateUser(&jsonbody, fusionAppId, true)
 		if err != nil {
 			resp.ErrResponse(c, http.StatusBadRequest, err.Error())
 			return

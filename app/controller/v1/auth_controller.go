@@ -1,15 +1,12 @@
 package v1
 
 import (
-	
-
-	"github.com/cyp57/user-api/model"
-	"github.com/cyp57/user-api/pkg/fusionauth"
-	"github.com/cyp57/user-api/utils"
+	"github.com/cyp57/userapi/model"
+	"github.com/cyp57/userapi/pkg/fusionauth"
+	"github.com/cyp57/userapi/utils"
 )
 
-
-type IAuthCtrl interface{
+type IAuthCtrl interface {
 	Login(*model.LoginInfo, string) (interface{}, error)
 	RefreshJwt(*model.RefreshJwt, string) (interface{}, error)
 }
@@ -47,11 +44,10 @@ func (a *AuthCtrl) Login(data *model.LoginInfo, appId string) (interface{}, erro
 
 func (a *AuthCtrl) RefreshJwt(data *model.RefreshJwt, appId string) (interface{}, error) {
 
-
 	var fusionObj fusionauth.Fusionauth
 	fusionObj.SetApplicationId(appId)
 
-	res ,err := fusionObj.NewAccessToken(data.Token,data.RefreshToken)
+	res, err := fusionObj.NewAccessToken(data.Token, data.RefreshToken)
 	if err != nil {
 		return nil, err
 	}
@@ -59,4 +55,17 @@ func (a *AuthCtrl) RefreshJwt(data *model.RefreshJwt, appId string) (interface{}
 	utils.Debug(res)
 
 	return res, nil
+}
+
+
+func (a * AuthCtrl) LogOut(data *model.LogOutInfo) (interface{} , error) {
+	var fusionObj fusionauth.Fusionauth
+	res , err := fusionObj.LogOut(data.RefreshToken)
+	if err != nil {
+		return nil, err
+	}
+	utils.Debug("LogOut ")
+	utils.Debug(res)
+
+	return res , nil
 }

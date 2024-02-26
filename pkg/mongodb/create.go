@@ -3,14 +3,13 @@ package mongodb
 import (
 	"context"
 
-	"github.com/cyp57/user-api/utils"
+	"github.com/cyp57/userapi/utils"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-
 func InsertOneDocument(collectionName string, data primitive.M, prefixId string) (string, error) {
 	infoId := ""
-	if !utils.IsEmptyString(prefixId) { // custom generate field id 
+	if !utils.IsEmptyString(prefixId) { // custom generate field id
 		infoId = utils.GenerateOid(prefixId)
 	} else { // default
 		infoId = utils.GenerateOid("SH")

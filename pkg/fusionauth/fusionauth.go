@@ -7,11 +7,11 @@ import (
 	"time"
 
 	"github.com/FusionAuth/go-client/pkg/fusionauth"
+	resHandler "github.com/cyp57/userapi/app/response"
+	"github.com/cyp57/userapi/cnst"
+	lrlog "github.com/cyp57/userapi/pkg/logrus"
+	"github.com/cyp57/userapi/utils"
 	"github.com/sirupsen/logrus"
-	lrlog "github.com/cyp57/user-api/pkg/logrus"
-	resHandler "github.com/cyp57/user-api/app/api-helper"
-	"github.com/cyp57/user-api/cnst"
-	"github.com/cyp57/user-api/utils"
 )
 
 type (
@@ -99,7 +99,6 @@ func (f *Fusionauth) Register() (response *fusionauth.RegistrationResponse, err 
 	request.User.LastName = f.LastName
 	request.User.MobilePhone = f.MobilePhone
 	request.Registration.Roles = f.Roles
-
 
 	response, restErr, err := AuthClient.Register("", request)
 	utils.Debug("AuthClient.Register :")
@@ -296,3 +295,17 @@ func (f *Fusionauth) NewAccessToken(token, refreshToken string) (*fusionauth.Iss
 
 	return response, nil
 }
+
+func (f *Fusionauth) LogOut(token string) (*fusionauth.BaseHTTPResponse, error) {
+
+	response, err := AuthClient.Logout(true, token)
+	utils.Debug("AuthClient.Logout :")
+	utils.Debug(response)
+
+	if err != nil {
+		resHandler.SetErrorCode(4019)
+		return nil, err
+	}
+	return response, nil
+}
+

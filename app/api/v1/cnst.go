@@ -1,8 +1,8 @@
 package v1
 
 import (
-	response "github.com/cyp57/user-api/app/api-helper"
-	ctrlv1 "github.com/cyp57/user-api/app/controller/v1"
+	"github.com/cyp57/userapi/app/response"
+	ctrlv1 "github.com/cyp57/userapi/app/controller/v1"
 )
 
 type ApiUserImpl struct {
@@ -10,14 +10,14 @@ type ApiUserImpl struct {
 	IUser
 }
 
-
 func InitApiUserImpl() *ApiUserImpl {
-	return  &ApiUserImpl{
+	return &ApiUserImpl{
 		IAuthentication: &AuthenticationApi{},
-		IUser:            &UserApi{},
+		IUser:           &UserApi{},
 	}
 }
 
 var authCtrlV1 = new(ctrlv1.AuthCtrl)
 var userCtrlV1 = new(ctrlv1.UserCtrl)
-var resp = new(response.ResponseHandler)
+
+var resp = response.Response()

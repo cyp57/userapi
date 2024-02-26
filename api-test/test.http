@@ -3,7 +3,7 @@
 @port = 4570
 @host = {{hostname}}:{{port}}
 @contentType = application/json
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImVmYjg2M2VlYyJ9.eyJhdWQiOiI0MGJjYmUwOC0yY2Y4LTQ1ZTItYTU5Zi1jNGM2NjEzZjRkZWYiLCJleHAiOjE3MDgxNTM0MTcsImlhdCI6MTcwODE0NjIxNywiaXNzIjoiYWNtZS5jb20iLCJzdWIiOiI4MmQyZWZkMC0zNWEwLTRmYzItOGRlMy1lZDViNzU5YmJiMmQiLCJqdGkiOiJmMWVmZjM1Ny0wMzRlLTRhOTMtOWI3Yy1lMTMxM2Y3MGM2ZTMiLCJhdXRoZW50aWNhdGlvblR5cGUiOiJQQVNTV09SRCIsImVtYWlsIjoiY2hhbnlhcGF0X2FkbWluQGdtYWlsLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJhZG1pbl9tcnMxIiwiYXBwbGljYXRpb25JZCI6IjQwYmNiZTA4LTJjZjgtNDVlMi1hNTlmLWM0YzY2MTNmNGRlZiIsInJvbGVzIjpbImFkbWluIl0sInNpZCI6IjY5YzA0ZWE3LTg2YzQtNDE0OC1hOGI1LTVhZWU4MzBjOGEyZCIsImF1dGhfdGltZSI6MTcwODE0NjIxNywidGlkIjoiNWE3Mjc3ZmEtNjUzMC1iOTE3LWIzNTMtNGVjZGI5Yjg1ZmM5In0.cdU_B4ixQz0NfscQ0QyeMU4ZNjTRZimil_a95mR26yI
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImVmYjg2M2VlYyJ9.eyJhdWQiOiI0MGJjYmUwOC0yY2Y4LTQ1ZTItYTU5Zi1jNGM2NjEzZjRkZWYiLCJleHAiOjE3MDg5NjEzNDUsImlhdCI6MTcwODk1NDIzNywiaXNzIjoiYWNtZS5jb20iLCJzdWIiOiI4MmQyZWZkMC0zNWEwLTRmYzItOGRlMy1lZDViNzU5YmJiMmQiLCJqdGkiOiI3NTE1M2M2ZS1mY2FlLTQyMzEtODM0YS03NGRmNWYyNjc0NzMiLCJhdXRoZW50aWNhdGlvblR5cGUiOiJKV1RfU1NPIiwiZW1haWwiOiJjaGFueWFwYXRfYWRtaW5AZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsInByZWZlcnJlZF91c2VybmFtZSI6ImFkbWluX21yczEiLCJhcHBsaWNhdGlvbklkIjoiNDBiY2JlMDgtMmNmOC00NWUyLWE1OWYtYzRjNjYxM2Y0ZGVmIiwicm9sZXMiOlsiYWRtaW4iXSwiYXV0aF90aW1lIjoxNzA4OTU0MjM3LCJ0aWQiOiI1YTcyNzdmYS02NTMwLWI5MTctYjM1My00ZWNkYjliODVmYzkifQ.Jz0cNlzO78eawfCyiNBqyPCdwTR4prSP0tMwKkK2y40
 ### login
 POST http://{{host}}/userapi/user/login HTTP/1.1
 content-type: {{contentType}}
@@ -13,24 +13,21 @@ content-type: {{contentType}}
     "password": "12345678"
 }
 
-# {
-#     "userName": "chanyapatshell5@gmail.com",
-#     "password": "12345678"
-# }
-
-# {
-#     "userName": "chanyapatshell@gmail.com",
-#     "password": "12345678"
-# }
-
-
 ### refresh token
 POST http://{{host}}/userapi/user/refresh/token HTTP/1.1
 content-type: {{contentType}}
 
 {
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImVmYjg2M2VlYyJ9.eyJhdWQiOiI0MGJjYmUwOC0yY2Y4LTQ1ZTItYTU5Zi1jNGM2NjEzZjRkZWYiLCJleHAiOjE3MDc3Mzc1MTEsImlhdCI6MTcwNzczMDMxMSwiaXNzIjoiYWNtZS5jb20iLCJzdWIiOiJjNjllMDYyYy03YzMwLTRmZjQtYThiMy1iMDY3ZTc3MmI0NjYiLCJqdGkiOiJkYzM5NzhkZS05NjQ4LTQyNmEtYTE4OS00NmExNzkwZjgwZTkiLCJhdXRoZW50aWNhdGlvblR5cGUiOiJQQVNTV09SRCIsImVtYWlsIjoiY2hhbnlhcGF0c2hlbGxAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsInByZWZlcnJlZF91c2VybmFtZSI6Im1yczAwMSIsImFwcGxpY2F0aW9uSWQiOiI0MGJjYmUwOC0yY2Y4LTQ1ZTItYTU5Zi1jNGM2NjEzZjRkZWYiLCJyb2xlcyI6WyJjdXN0b21lciJdLCJzaWQiOiI3MjRlMTQ5ZC0xYTA1LTRjOWQtOTdmMC1kOGIzZDI0MjA5MTIiLCJhdXRoX3RpbWUiOjE3MDc3MzAzMTEsInRpZCI6IjVhNzI3N2ZhLTY1MzAtYjkxNy1iMzUzLTRlY2RiOWI4NWZjOSJ9.9qgX0lHCgr56cIpRkwV9eEJgRQvleR6U0yaJxj777vk",
-  "refreshToken": "OUJuzL3_VXwKnDNbB6QfDhVJbJjUBydSEqDzArEz3DWlcXcipCNeEw"
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImVmYjg2M2VlYyJ9.eyJhdWQiOiI0MGJjYmUwOC0yY2Y4LTQ1ZTItYTU5Zi1jNGM2NjEzZjRkZWYiLCJleHAiOjE3MDg5NjEzNDUsImlhdCI6MTcwODk1NDE0NSwiaXNzIjoiYWNtZS5jb20iLCJzdWIiOiI4MmQyZWZkMC0zNWEwLTRmYzItOGRlMy1lZDViNzU5YmJiMmQiLCJqdGkiOiJhMGU0YWRiNS03MDFiLTRlMjYtODIwMi02NDgyMGQ1YmRlYmIiLCJhdXRoZW50aWNhdGlvblR5cGUiOiJQQVNTV09SRCIsImVtYWlsIjoiY2hhbnlhcGF0X2FkbWluQGdtYWlsLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJhZG1pbl9tcnMxIiwiYXBwbGljYXRpb25JZCI6IjQwYmNiZTA4LTJjZjgtNDVlMi1hNTlmLWM0YzY2MTNmNGRlZiIsInJvbGVzIjpbImFkbWluIl0sInNpZCI6IjNiYTZlNmNhLTk5ZGUtNDlhOC1hNmE0LWM2N2JjZjZhY2FjZSIsImF1dGhfdGltZSI6MTcwODk1NDE0NSwidGlkIjoiNWE3Mjc3ZmEtNjUzMC1iOTE3LWIzNTMtNGVjZGI5Yjg1ZmM5In0.MAv1uy9ppYCKnNApxU4qe7dDWXaNvkywsBIQvM_-pjc",
+  "refreshToken": "fwcWLY6LPiWLZBEMZeSmcFifrwiygHXtga7YlaLz-TipzChECmwlpA"
+}
+
+### logout
+POST http://{{host}}/userapi/user/logout HTTP/1.1
+content-type: {{contentType}}
+
+{
+  "refreshToken": "fwcWLY6LPiWLZBEMZeSmcFifrwiygHXtga7YlaLz-TipzChECmwlpAasdasda"
 }
 
 
@@ -53,11 +50,11 @@ POST http://{{host}}/userapi/user/signup HTTP/1.1
 content-type: {{contentType}}
 
 {
-    "userName": "shell01",
-    "email" : "chanyapat1@gmail.com",
+    "userName": "shell02",
+    "email" : "chanyapat2@gmail.com",
     "password": "12345678",
-    "firstName" : "chanyapat1",
-	"lastName" : "rattanakot1"
+    "firstName" : "chanyapat2",
+	  "lastName" : "rattanakot2"
 }
 
 ### edit
@@ -70,7 +67,6 @@ content-type: {{contentType}}
   "uuid": "03597719-333d-4e41-b22a-6432be2df115",
   "username": "chanyapat9_username",
   "email": "chanyapatshell9_edit@gmail.com",
-  "password": "$2a$14$Qys24Fngb4A6O8Bs8o1YQ.UfzWXuLVl42oCLH9Fbycvd8cXUsIeye",
   "firstName": "char9__edit",
   "lastName": "lchar9",
   "age": 10,
@@ -87,7 +83,6 @@ content-type: {{contentType}}
 {
   "email": "chanyapatshell9_patch@gmail.com"
 }
-
 
 
 ### get by uuid

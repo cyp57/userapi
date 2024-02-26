@@ -1,23 +1,22 @@
 package main
 
 import (
-
-	"github.com/cyp57/user-api/cnst"
-	"github.com/cyp57/user-api/config"
-	"github.com/cyp57/user-api/setting"
-	fusionauthPkg "github.com/cyp57/user-api/pkg/fusionauth"
-	lrlog "github.com/cyp57/user-api/pkg/logrus"
-	"github.com/cyp57/user-api/pkg/mongodb"
-	"github.com/cyp57/user-api/route"
-	"github.com/cyp57/user-api/utils"
+	"github.com/cyp57/userapi/cnst"
+	"github.com/cyp57/userapi/config"
+	fusionauthPkg "github.com/cyp57/userapi/pkg/fusionauth"
+	lrlog "github.com/cyp57/userapi/pkg/logrus"
+	"github.com/cyp57/userapi/pkg/mongodb"
+	"github.com/cyp57/userapi/route"
+	"github.com/cyp57/userapi/setting"
+	"github.com/cyp57/userapi/utils"
 
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 )
 
 const (
-	PathEnv = "config/.env"
-	PathIni = "config/app.ini"
+	PathEnv  = "config/.env"
+	PathIni  = "config/app.ini"
 	PathYaml = "config"
 )
 
@@ -28,11 +27,11 @@ func main() {
 
 func initService() {
 
-	config.LoadConfig(PathEnv,PathYaml)
+	config.LoadConfig(PathEnv, PathYaml)
 	setting.InitIni(PathIni)
-	mongodb.MongoDbConnect() 
+	mongodb.MongoDbConnect()
 	fusionauthPkg.InitFusionAuth()
-	route.InitRoute() 
+	route.InitRoute()
 
 }
 
@@ -58,4 +57,3 @@ func InitConfigYaml(env string) {
 		utils.SetViperYaml(viperYaml)
 	}
 }
-

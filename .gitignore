@@ -24,5 +24,5 @@
 
 # Go workspace file
 go.work
-
+mongodb_data/
 # End of https://www.toptal.com/developers/gitignore/api/go

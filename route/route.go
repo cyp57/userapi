@@ -3,14 +3,13 @@ package route
 import (
 	"path"
 
-	v1 "github.com/cyp57/user-api/app/api/v1"
-	"github.com/cyp57/user-api/app/middleware"
-	"github.com/cyp57/user-api/cnst"
-	"github.com/cyp57/user-api/utils"
+	v1 "github.com/cyp57/userapi/app/api/v1"
+	"github.com/cyp57/userapi/app/middleware"
+	"github.com/cyp57/userapi/cnst"
+	"github.com/cyp57/userapi/utils"
 	"github.com/easonlin404/limit"
 	"github.com/gin-gonic/gin"
 )
-
 
 func InitRoute() *gin.Engine {
 
@@ -43,21 +42,22 @@ func setRoute(router *gin.Engine) {
 	{ // non require token group
 		nonAuthGroup := v1.Group(path.Join("user"))
 		nonAuthGroup.POST("/login", api.Login)
+		nonAuthGroup.POST("/logout", api.LogOut)
 		nonAuthGroup.POST("/refresh/token", api.Refresh)
 		nonAuthGroup.POST("/signup", api.CreateUser)
-		nonAuthGroup.POST("/forgot/password",api.ForgotPassword)
+		nonAuthGroup.POST("/forgot/password", api.ForgotPassword)
 	}
 	{ // require token group
 		reqAuthGroup := v1.Group(path.Join("user"))
 		reqAuthGroup.Use(middleHandler.ValidateToken)
-		reqAuthGroup.POST("/admin/signup",middleHandler.AuthorizeRole("admin") ,api.CreateAdmin)  /// admin
-		reqAuthGroup.PUT("/:uuid",middleHandler.AuthorizeRole("admin","customer") , api.EditUser) //// customer ,admin
-		reqAuthGroup.PATCH("/:uuid",middleHandler.AuthorizeRole("admin","customer") , api.PatchUser) //// customer ,admin
-	    reqAuthGroup.GET("/:uuid",middleHandler.AuthorizeRole("admin","customer") , api.GetUser) // customer admin
-		reqAuthGroup.GET("/",middleHandler.AuthorizeRole("admin") , api.GetUserList) // list for admin 
-		reqAuthGroup.DELETE("/:uuid",middleHandler.AuthorizeRole("admin","customer") , api.DeleteUser) // customer admin
+		reqAuthGroup.POST("/admin/signup", middleHandler.AuthorizeRole("admin"), api.CreateAdmin)       /// admin
+		reqAuthGroup.PUT("/:uuid", middleHandler.AuthorizeRole("admin", "customer"), api.EditUser)      //// customer ,admin
+		reqAuthGroup.PATCH("/:uuid", middleHandler.AuthorizeRole("admin", "customer"), api.PatchUser)   //// customer ,admin
+		reqAuthGroup.GET("/:uuid", middleHandler.AuthorizeRole("admin", "customer"), api.GetUser)       // customer admin
+		reqAuthGroup.GET("/", middleHandler.AuthorizeRole("admin"), api.GetUserList)                    // list for admin
+		reqAuthGroup.DELETE("/:uuid", middleHandler.AuthorizeRole("admin", "customer"), api.DeleteUser) // customer admin
 
-		reqAuthGroup.PUT("/change/password/:uuid",middleHandler.AuthorizeRole("admin","customer") , api.ChangePassword) //// customer ,admin
+		reqAuthGroup.PUT("/change/password/:uuid", middleHandler.AuthorizeRole("admin", "customer"), api.ChangePassword) //// customer ,admin
 
 	}
 

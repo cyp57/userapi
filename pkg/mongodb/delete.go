@@ -5,7 +5,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/cyp57/user-api/utils"
+	"github.com/cyp57/userapi/utils"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 

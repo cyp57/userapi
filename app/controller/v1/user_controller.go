@@ -7,12 +7,12 @@ import (
 	"strconv"
 	"sync"
 
-	"github.com/cyp57/user-api/cnst"
-	"github.com/cyp57/user-api/model"
-	"github.com/cyp57/user-api/pkg/fusionauth"
-	"github.com/cyp57/user-api/pkg/mongodb"
-	"github.com/cyp57/user-api/setting"
-	"github.com/cyp57/user-api/utils"
+	"github.com/cyp57/userapi/cnst"
+	"github.com/cyp57/userapi/model"
+	"github.com/cyp57/userapi/pkg/fusionauth"
+	"github.com/cyp57/userapi/pkg/mongodb"
+	"github.com/cyp57/userapi/setting"
+	"github.com/cyp57/userapi/utils"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
@@ -48,7 +48,7 @@ func (u *UserCtrl) CreateUser(data *model.RegistrationInfo, appId string, isAdmi
 	fusionObj.FirstName = data.FirstName
 	fusionObj.LastName = data.LastName
 	fusionObj.SetApplicationId(appId)
-	// fusionObj.MobilePhone = data.
+	fusionObj.MobilePhone = data.MobilePhone
 
 	resp, err := fusionObj.Register()
 	if err != nil {

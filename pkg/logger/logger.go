@@ -11,8 +11,8 @@ import (
 	"strings"
 	"time"
 
-	lrlog "github.com/cyp57/user-api/pkg/logrus"
-	"github.com/cyp57/user-api/utils"
+	lrlog "github.com/cyp57/userapi/pkg/logrus"
+	"github.com/cyp57/userapi/utils"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 )
@@ -78,15 +78,25 @@ func (l *LoggerObj) SetBody(c *gin.Context) {
 		}
 		// Log the request body
 		log.Printf("Received request body: %s", body)
-		// Declare an empty interface{}
-		var result interface{}
 
-		// Unmarshal the byte slice into the empty interface
+		var result map[string]interface{}
+
 		err = json.Unmarshal(body, &result)
 		if err != nil {
 			ls := &lrlog.LrlogObj{Data: nil, Txt: err.Error(), Level: logrus.ErrorLevel}
 			ls.Print()
 			return
+		}
+
+		if _, ok := result["password"]; ok {
+			// hash password
+			hashed, err := utils.HashPassword(fmt.Sprint(result["password"]))
+			if err != nil {
+				ls := &lrlog.LrlogObj{Data: nil, Txt: err.Error(), Level: logrus.ErrorLevel}
+				ls.Print()
+				return
+			}
+			result["password"] = hashed
 		}
 
 		l.Body = result

@@ -4,8 +4,8 @@ import (
 	"time"
 
 	nested "github.com/antonfisher/nested-logrus-formatter"
-	"github.com/cyp57/user-api/cnst"
-	"github.com/cyp57/user-api/utils"
+	"github.com/cyp57/userapi/cnst"
+	"github.com/cyp57/userapi/utils"
 	"github.com/sirupsen/logrus"
 )
 
@@ -18,7 +18,7 @@ type LrlogObj struct {
 // init log logrus
 func InitLogrus() {
 	logrus.SetFormatter(&nested.Formatter{
-		HideKeys: true,
+		HideKeys:        true,
 		TimestampFormat: time.RFC3339,
 		ShowFullLevel:   true,
 		NoFieldsSpace:   false,

@@ -4,16 +4,16 @@ import (
 	"fmt"
 	"testing"
 
-	ctrlv1 "github.com/cyp57/user-api/app/controller/v1"
-	"github.com/cyp57/user-api/cnst"
-	"github.com/cyp57/user-api/config"
-	"github.com/cyp57/user-api/model"
-	fusionauthPkg "github.com/cyp57/user-api/pkg/fusionauth"
-	"github.com/cyp57/user-api/utils"
+	ctrlv1 "github.com/cyp57/userapi/app/controller/v1"
+	"github.com/cyp57/userapi/cnst"
+	"github.com/cyp57/userapi/config"
+	"github.com/cyp57/userapi/model"
+	fusionauthPkg "github.com/cyp57/userapi/pkg/fusionauth"
+	"github.com/cyp57/userapi/utils"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 
-	"github.com/cyp57/user-api/pkg/mongodb"
-	"github.com/cyp57/user-api/setting"
+	"github.com/cyp57/userapi/pkg/mongodb"
+	"github.com/cyp57/userapi/setting"
 )
 
 const (
@@ -120,7 +120,7 @@ func Test_CreateUser(t *testing.T) {
 }
 
 func Test_UpdateUserInfo(t *testing.T) {
-	// create 
+	// create
 	// update <<
 	// get for check
 	initTestEnvironment()
@@ -168,7 +168,7 @@ func Test_UpdateUserInfo(t *testing.T) {
 			return
 		}
 	}
-	
+
 }
 
 func Test_DeleteUser(t *testing.T) {

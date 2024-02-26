@@ -1,8 +1,8 @@
 package setting
 
 import (
-	"github.com/cyp57/user-api/cnst"
-	lrlog "github.com/cyp57/user-api/pkg/logrus"
+	"github.com/cyp57/userapi/cnst"
+	lrlog "github.com/cyp57/userapi/pkg/logrus"
 	"github.com/go-ini/ini"
 	"github.com/sirupsen/logrus"
 )

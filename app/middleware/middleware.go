@@ -2,21 +2,21 @@ package middleware
 
 import (
 	"bytes"
-	
+
 	"net/http"
 
 	"time"
 
-	response "github.com/cyp57/user-api/app/api-helper"
-	"github.com/cyp57/user-api/cnst"
-	"github.com/cyp57/user-api/pkg/fusionauth"
-	"github.com/cyp57/user-api/pkg/logger"
-	"github.com/cyp57/user-api/utils"
+	response "github.com/cyp57/userapi/app/response"
+	"github.com/cyp57/userapi/cnst"
+	"github.com/cyp57/userapi/pkg/fusionauth"
+	"github.com/cyp57/userapi/pkg/logger"
+	"github.com/cyp57/userapi/utils"
 
 	"github.com/gin-gonic/gin"
 )
 
-var resp = &response.ResponseHandler{}
+var resp = response.Response()
 
 type MiddlewareHandler struct{}
 
@@ -45,7 +45,7 @@ func (m *MiddlewareHandler) InterceptLog() gin.HandlerFunc {
 		c.Next()
 
 		log.SetResponse(c, rw)
-		// log.Print() on print log
+		// log.Print()  print log only.
 		log.Print().Save() //  print and save log to \assets\log
 	}
 }
@@ -70,7 +70,7 @@ func (m *MiddlewareHandler) ValidateToken(c *gin.Context) {
 		userInfo, err := fusionObj.GetUserRegistration(uuid)
 		utils.Debug("MiddlewareHandler.ValidateToken :")
 		utils.Debug(userInfo)
-	
+
 		if err != nil {
 			resp.ErrResponse(c, http.StatusUnauthorized, cnst.ErrReqRole)
 			// c.Abort()
@@ -85,7 +85,6 @@ func (m *MiddlewareHandler) ValidateToken(c *gin.Context) {
 		c.Abort()
 	}
 }
-
 
 func (m *MiddlewareHandler) CorsMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
@@ -102,12 +101,11 @@ func (m *MiddlewareHandler) CorsMiddleware() gin.HandlerFunc {
 	}
 }
 
-
 func (m *MiddlewareHandler) AuthorizeRole(expectRole ...string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		if len(expectRole) > 0 {
 			userRoles, exists := c.Get("roles")
-			
+
 			if !exists {
 				resp.ErrResponse(c, http.StatusUnauthorized, cnst.ErrAuthorizeRole)
 				return
