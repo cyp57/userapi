@@ -22,12 +22,6 @@ func UpdateDocument(collectionName string, filter primitive.M, update primitive.
 		Filters: arrayfilter,
 	} 
 
-	// opts := options.FindOneAndUpdateOptions{ 
-	// 	Upsert:         &upsert,
-	// 	ArrayFilters:   &arrayfilterOpts,
-	// 	ReturnDocument: &after,
-	// }
-
 	opts := &options.FindOneAndUpdateOptions{}
 
 	opts.SetUpsert(true)

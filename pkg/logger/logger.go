@@ -57,7 +57,7 @@ func (l *LoggerObj) Save() {
 	file.WriteString(string(data) + "\n")
 }
 func (l *LoggerObj) SetQuery(c *gin.Context) {
-	// Retrieve all query parameters as a map
+	
 	queryParams := c.Request.URL.Query()
 
 	// Log all query parameters

@@ -9,8 +9,8 @@ POST http://{{host}}/userapi/user/login HTTP/1.1
 content-type: {{contentType}}
 
 {
-    "userName": "chanyapat_admin@gmail.com",
-    "password": "12345678"
+    "userName": "xxxx@gmail.com",
+    "password": "xxxxxxxx"
 }
 
 ### refresh token
@@ -39,10 +39,10 @@ content-type: {{contentType}}
 
 {
     "userName": "admin_mrs1",
-    "email" : "chanyapat_admin@gmail.com",
-    "password": "12345678",
-    "firstName" : "chanyapat",
-	"lastName" : "rattamakot"
+    "email" : "xxxx_admin@gmail.com",
+    "password": "xxxxxxxx",
+    "firstName" : "fname",
+	  "lastName" : "lname"
 }
 
 ### signup
@@ -50,11 +50,11 @@ POST http://{{host}}/userapi/user/signup HTTP/1.1
 content-type: {{contentType}}
 
 {
-    "userName": "shell02",
-    "email" : "chanyapat2@gmail.com",
-    "password": "12345678",
-    "firstName" : "chanyapat2",
-	  "lastName" : "rattanakot2"
+    "userName": "dev01",
+    "email" : "xxxxx@gmail.com",
+    "password": "xxxxxxxx",
+    "firstName" : "fname",
+	  "lastName" : "lname"
 }
 
 ### edit
@@ -65,9 +65,9 @@ content-type: {{contentType}}
 {
   "id": "Uc65bf471133a8be51280744dd",
   "uuid": "03597719-333d-4e41-b22a-6432be2df115",
-  "username": "chanyapat9_username",
-  "email": "chanyapatshell9_edit@gmail.com",
-  "firstName": "char9__edit",
+  "username": "xxxxxxx_username",
+  "email": "xxxxx_edit@gmail.com",
+  "firstName": "edit",
   "lastName": "lchar9",
   "age": 10,
   "mobilePhone" : "0910910912",
@@ -81,7 +81,7 @@ token: {{token}}
 content-type: {{contentType}}
 
 {
-  "email": "chanyapatshell9_patch@gmail.com"
+  "email": "xxxxxx_patch@gmail.com"
 }
 
 
@@ -106,7 +106,7 @@ POST  http://{{host}}/userapi/user/forgot/password HTTP/1.1
 token:
 content-type: {{contentType}}
 
-{"email" : "chanyapatshell@gmail.com"}
+{"email" : "xxxx@gmail.com"}
 
 ### change/pass
 PUT  http://{{host}}/userapi/user/change/password/c69e062c-7c30-4ff4-a8b3-b067e772b466 HTTP/1.1
