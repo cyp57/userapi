@@ -34,11 +34,11 @@ func (m *MiddlewareHandler) InterceptLog() gin.HandlerFunc {
 		log.SetQuery(c)
 		log.SetBody(c)
 
-		// Create a buffer to capture the response
+	
 		buff := &bytes.Buffer{}
 		rw := &logger.ResponseWriter{Body: buff, ResponseWriter: c.Writer}
 
-		// Set the intercepted writer to the context
+		
 		c.Writer = rw
 
 		// Process the request
